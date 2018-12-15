@@ -11,8 +11,8 @@ public class DataPane extends StackPane implements MainViewInterface {
 
 	private User user;
 	
-	private SignUpPane signup;
-	private RegistrationPane register;
+	private LoginView login;
+	private RegisterView register;
 	private CartPane cart;
 	private MainProfilePane profile;
 	private EditDiscountPane discount;
@@ -30,9 +30,9 @@ public class DataPane extends StackPane implements MainViewInterface {
 	}
 	
 	private void generateGeneralWindows() {
-		signup = new SignUpPane();
-		register = new RegistrationPane();
-		views.put(WindowType.SIGNUP, signup);
+		login = new LoginView();
+		register = new RegisterView();
+		views.put(WindowType.LOGIN, login);
 		views.put(WindowType.REGIRSTRATION, register);
 	}
 	

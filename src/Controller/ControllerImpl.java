@@ -12,7 +12,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void register(String userName, String password, int balance, String phoneNumber) { //why int balance? not double? we are dealing with discounts
+	public void register(String userName, String password, double balance, String phoneNumber) { //
 		//that would turn the price into fractions
 		// TODO Auto-generated method stub
 		
@@ -44,8 +44,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void updateProdctInStore(int productID, String productName, int price, int ammountInStock) {
-		//is there a reason for the product ID to be int? shouldn't it be string? we don't make any calculations with this number...
+	public void updateProdctInStore(int productID, String productName, double price, int ammountInStock) {
 		// TODO Auto-generated method stub
 		
 	}
