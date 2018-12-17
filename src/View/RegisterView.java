@@ -8,14 +8,27 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-public class RegisterView extends Application {
+public class RegisterView extends Application implements ViewInterface {
 
+	private Label headerLabel;
+	private Label userNameLabel;
+	private TextField userNameField;
+	private Label phoneLabel;
+	private TextField phoneField;
+	private Label passwordLabel;
+	private PasswordField passwordField;
+	private Label balanceLabel;
+	private TextField balanceField;
+	private Button submitButton;
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Registration Page");
@@ -63,54 +76,56 @@ public class RegisterView extends Application {
 
         return gridPane;
     }
-
+	
     private void addUIControls(GridPane gridPane) {
         // Add Header
-        Label headerLabel = new Label("Registration Form");
+        headerLabel = new Label("Registration Form");
         headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        
+        headerLabel.setEffect(ViewEffects.getShadowEffect(5, 5));
         gridPane.add(headerLabel,0,0,2,1);
         GridPane.setHalignment(headerLabel, HPos.CENTER);
         GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
 
         // Add UserName Label
-        Label userNameLabel = new Label("User Name : ");
+        userNameLabel = new Label("User Name : ");
         gridPane.add(userNameLabel, 0,1);
 
         // Add UserName Text Field
-        TextField userNameField = new TextField();
+        userNameField = new TextField();
         userNameField.setPrefHeight(40);
         gridPane.add(userNameField, 1,1);
 
 
         // Add PhoneLabel
-        Label phoneLabel = new Label("Phone Number: ");
+        phoneLabel = new Label("Phone Number: ");
         gridPane.add(phoneLabel,0, 2);
 
         // Add Phone Text Field
-        TextField phoneField = new TextField();
+        phoneField = new TextField();
         phoneField.setPrefHeight(40);
         gridPane.add(phoneField, 1, 2);
 
         // Add Password Label
-        Label passwordLabel = new Label("Password : ");
+        passwordLabel = new Label("Password : ");
         gridPane.add(passwordLabel, 0, 3);
 
         // Add Password Field
-        PasswordField passwordField = new PasswordField();
+        passwordField = new PasswordField();
         passwordField.setPrefHeight(40);
         gridPane.add(passwordField, 1, 3);
         
         // Add Balance Label
-        Label balanceLabel = new Label("Balance : ");
+        balanceLabel = new Label("Balance : ");
         gridPane.add(balanceLabel, 0,4);
 
         // Add Balance Text Field
-        TextField balanceField = new TextField();
+        balanceField = new TextField();
         balanceField.setPrefHeight(40);
         gridPane.add(balanceField, 1, 4);
 
         // Add Submit Button
-        Button submitButton = new Button("Submit");
+        submitButton = new Button("Submit");
         submitButton.setPrefHeight(40);
         submitButton.setDefaultButton(true);
         submitButton.setPrefWidth(100);
@@ -155,4 +170,22 @@ public class RegisterView extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+	@Override
+	public void updateData(DataType data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clearData() {
+
+		
+		
+		userNameField.clear();
+		phoneField.clear();
+		passwordField.clear();
+		balanceField.clear();
+		
+	}
 }

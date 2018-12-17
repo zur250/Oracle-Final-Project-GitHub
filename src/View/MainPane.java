@@ -23,12 +23,6 @@ public class MainPane extends BorderPane implements MainViewInterface {
 	}
 
 	@Override
-	public void showError(ErrorMessage msg) {
-		bottomPane.showError(msg);
-		
-	}
-
-	@Override
 	public void updateData(DataType data) {
 		bottomPane.updateData(data);
 		
