@@ -20,14 +20,22 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class LoginView extends Application {
+public class LoginView extends Application implements ViewInterface {
 	String user = "zur";
 	String pw = "password";
 	String checkUser, checkPw;
 	
-	BorderPane bp;
-	HBox hb;
-	GridPane gridPane;
+	private BorderPane bp;
+	private HBox hb;
+	private GridPane gridPane;
+	private Label lblUserName;
+    private TextField txtUserName;
+    private Label lblPassword;
+    private PasswordField pf;
+    private Button btnLogin;
+    private Label lblMessage;
+    
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Login Page");
@@ -73,12 +81,12 @@ public class LoginView extends Application {
 	
 	private void addUIControls(GridPane gridPane) {
 		   //Implementing Nodes for GridPane
-        Label lblUserName = new Label("Username");
-        final TextField txtUserName = new TextField();
-        Label lblPassword = new Label("Password");
-        final PasswordField pf = new PasswordField();
-        Button btnLogin = new Button("Login");
-        final Label lblMessage = new Label();
+        lblUserName = new Label("Username");
+        txtUserName = new TextField();
+        lblPassword = new Label("Password");
+        PasswordField pf = new PasswordField();
+        btnLogin = new Button("Login");
+        Label lblMessage = new Label();
         
         //Adding Nodes to GridPane layout
         gridPane.add(lblUserName, 0, 0);
@@ -88,16 +96,10 @@ public class LoginView extends Application {
         gridPane.add(btnLogin, 2, 1);
         gridPane.add(lblMessage, 1, 2);
         
-        
-        //DropShadow effect 
-        DropShadow dropShadow = new DropShadow();
-        dropShadow.setOffsetX(5);
-        dropShadow.setOffsetY(5);
-        
         //Adding text and DropShadow effect to it
         Text text = new Text("Login");
         text.setFont(Font.font ("Verdana", 30));
-        text.setEffect(dropShadow);
+        text.setEffect(ViewEffects.getShadowEffect(5, 5));
         
         //Adding text to HBox
         hb.getChildren().add(text);
@@ -131,5 +133,18 @@ public class LoginView extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+	@Override
+	public void updateData(DataType data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clearData() {
+		// TODO Auto-generated method stub
+		txtUserName.clear();
+		pf.clear();
+	}
 
 }

@@ -25,32 +25,32 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void addProductToCart(int productID, int ammount) {//how do I know which cart? is the user stored in the controller
+	public void addProductToCart(String productID, int ammount) {//how do I know which cart? is the user stored in the controller
 		//or should it be passed as an argument in this function?
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void removeProductFromCart(int productID, int ammount) {//same question as above
+	public void removeProductFromCart(String productID, int ammount) {//same question as above
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void updateRoleDiscount(int percentage) {//which role?
+	public void updateRoleDiscount(String roleID,int percentage) {//which role?
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void updateProdctInStore(int productID, String productName, double price, int ammountInStock) {
+	public void updateProdctInStore(String productID, String productName, double price, int ammountInStock) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void deleteProductFromStore(int productID) {//same as above
+	public void deleteProductFromStore(String productID) {//same as above
 		// TODO Auto-generated method stub
 		
 	}
@@ -75,6 +75,12 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 
 	@Override
 	public void registerView(ViewInterface IView) {//wrong interface
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateUserRole(String roleID, String userName) {
 		// TODO Auto-generated method stub
 		
 	}
