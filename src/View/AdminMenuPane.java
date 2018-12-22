@@ -13,6 +13,6 @@ public class AdminMenuPane extends CustomerWorkerMenuPane {
 		super.addButtons(addNewProduct);
 		super.addButtons(discounts);
 		super.addButtons(users);
-		super.setButtonOnPane();
+//		super.setButtonOnPane();
 	}
 }

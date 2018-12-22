@@ -1,9 +1,6 @@
 package View;
 
-import java.util.HashMap;
-
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 
 public class MainPane extends BorderPane implements MainViewInterface {
 	
@@ -33,8 +30,7 @@ public class MainPane extends BorderPane implements MainViewInterface {
 		bottomPane.changeView(type);
 	}
 	
-	public void setUser(User user) {
-		bottomPane.setUser(user);
+	public void setUser(UserType userRole) {
+		bottomPane.setUser(userRole);
 	}
-
 }

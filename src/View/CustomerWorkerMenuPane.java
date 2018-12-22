@@ -15,6 +15,6 @@ public class CustomerWorkerMenuPane extends MenuPane {
 		super.addButtons(purchases);
 		super.addButtons(purchases);
 		super.addButtons(cart);
-		super.setButtonOnPane();
+//		super.setButtonOnPane();
 	}
 }
