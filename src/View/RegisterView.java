@@ -80,7 +80,7 @@ public class RegisterView extends Application implements ViewInterface {
     private void addUIControls(GridPane gridPane) {
         // Add Header
         headerLabel = new Label("Registration Form");
-        headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        headerLabel.setFont(ViewEffects.getHeadersFont());
         
         headerLabel.setEffect(ViewEffects.getShadowEffect(5, 5));
         gridPane.add(headerLabel,0,0,2,1);
@@ -158,15 +158,6 @@ public class RegisterView extends Application implements ViewInterface {
         });
     }
 
-    private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.initOwner(owner);
-        alert.show();
-    }
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -179,9 +170,6 @@ public class RegisterView extends Application implements ViewInterface {
 
 	@Override
 	public void clearData() {
-
-		
-		
 		userNameField.clear();
 		phoneField.clear();
 		passwordField.clear();
