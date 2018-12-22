@@ -4,7 +4,7 @@ import javafx.scene.layout.BorderPane;
 
 public class BottomPane extends BorderPane implements MainViewInterface {
 	
-	private User user;
+	private UserType userRole;
 	private MenuPane menu;
 	private MainViewInterface data;
 	
@@ -17,11 +17,11 @@ public class BottomPane extends BorderPane implements MainViewInterface {
 		
 	}
 	
-	@Override
+/*	@Override
 	public void showError(ErrorMessage msg) {
 		this.data.showError(msg);
 
-	}
+	}*/
 
 	@Override
 	public void updateData(DataType data) {
@@ -39,18 +39,18 @@ public class BottomPane extends BorderPane implements MainViewInterface {
 		this.data.changeView(type);
 	}
 
-	public void setUser(User user) {
-		this.user=user;
-		switch (user.type) {
-		case UserType.ADMIN:
+	public void setUser(UserType userRole) {
+		this.userRole=userRole;
+		switch (userRole) {
+		case ADMIN:
 			menu = new AdminMenuPane();
 			//how do I show this menu?
 			break;
-		case UserType.WORKER:
+		case WORKER:
 			menu = new CustomerWorkerMenuPane();
 			//how do I show this menu?
 			break;
-		case UserType.CUSTOMER:
+		case CUSTOMER:
 			menu = new CustomerWorkerMenuPane();
 			//how do I show this menu?
 			break;
@@ -59,6 +59,6 @@ public class BottomPane extends BorderPane implements MainViewInterface {
 			//how do I show this menu?
 			break;
 		}
-		data.setUser(user);
+		data.setUser(userRole);
 	}
 }

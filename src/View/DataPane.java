@@ -9,16 +9,16 @@ public class DataPane extends StackPane implements MainViewInterface {
 
 	private HashMap<WindowType, ViewInterface> views = new HashMap<WindowType, ViewInterface>();
 
-	private User user;
+	private UserType userRole;
 	
 	private LoginView login;
 	private RegisterView register;
 	private CartPane cart;
 	private MainProfilePane profile;
-	private EditDiscountPane discount;
+	private EditRolesPane editRoles;
 	private AddProductPane addProduct;
-	private PurchasesPane purchases;
-	private NewPurchasePane purchase;
+	private ViewPurchaseHistoryPane historyPurchases;
+	private ViewProductsPane products;
 	private UsersPane users;
 	
 	private ViewInterface currentPane;
@@ -26,7 +26,7 @@ public class DataPane extends StackPane implements MainViewInterface {
 	public DataPane() {
 		super();
 		generateGeneralWindows();
-		currentPane = views.get(WindowType.SIGNUP);
+		currentPane = views.get(WindowType.LOGIN);
 	}
 	
 	private void generateGeneralWindows() {
@@ -37,19 +37,19 @@ public class DataPane extends StackPane implements MainViewInterface {
 	}
 	
 	private void generateUserWindows() {
-		cart = new CartPane(user);
-		profile = new MainProfilePane(user);
-		discount = new EditDiscountPane();
+		cart = new CartPane(userRole);
+		profile = new MainProfilePane(userRole);
+		editRoles = new EditRolesPane();
 		addProduct = new AddProductPane();
-		purchases = new PurchasesPane(user);
-		purchase = new NewPurchasePane(user);
+		historyPurchases = new ViewPurchaseHistoryPane(userRole);
+		products = new ViewProductsPane(userRole);
 		users = new UsersPane();
 		views.put(WindowType.CART, cart);
-		views.put(WindowType.MAIN, profile);
-		views.put(WindowType.DISCOUNTS, discount);
+		views.put(WindowType.PROFILE, profile);
+		views.put(WindowType.ROLES, editRoles);
 		views.put(WindowType.ADD_PRODUCT, addProduct);
-		views.put(WindowType.ALL_PURCHASES, purchases);
-		views.put(WindowType.PURCHASE, purchase);
+		views.put(WindowType.PURCHASE_HISTORY, historyPurchases);
+		views.put(WindowType.PRODUCTS, products);
 		views.put(WindowType.USERS, users);
 	}
 	
@@ -60,11 +60,11 @@ public class DataPane extends StackPane implements MainViewInterface {
 		
 	}
 	
-	@Override
+/*	@Override
 	public void showError(ErrorMessage msg) {
 		this.currentPane.showError(msg);
 		
-	}
+	}*/
 	
 	@Override
 	public void updateData(DataType data) {
@@ -77,8 +77,8 @@ public class DataPane extends StackPane implements MainViewInterface {
 	}
 
 	@Override
-	public void setUser(User user) {
-		this.user = user;
+	public void setUser(UserType userRole) {
+		this.userRole = userRole;
 		generateUserWindows();
 	}
 }

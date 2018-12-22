@@ -2,14 +2,21 @@ package View;
 
 public enum WindowType {
 
-	LOGIN ("Login") ,REGIRSTRATION ("Register"), CART ("Cart"), MAIN ("Main"), DISCOUNTS("Manage Discount"),
-	ADD_PRODUCT ("Add product"), ALL_PURCHASES("All Purchases"), PURCHASE("Purchase"), USERS("Show Users");
+	LOGIN ("Login", null) ,REGIRSTRATION ("Register", null), CART ("Cart", UserType.CUSTOMER),
+	PROFILE ("My Profile", UserType.CUSTOMER), ROLES("Manage Role Permissions", UserType.ADMIN),
+	ADD_PRODUCT ("Add Product to Stock", UserType.ADMIN), PURCHASE_HISTORY("Purchase History", UserType.CUSTOMER),
+	PRODUCTS("View and Purchase Products", UserType.CUSTOMER), USERS("Manage Users", UserType.ADMIN);
 	
 	final String text;
-	private WindowType (String text) {
+	final UserType lowestPermitted;
+	private WindowType (String text, UserType lowestPermittedType) {
 		this.text = text;
+		this.lowestPermitted=lowestPermittedType;
 	}
 	public String getText (){
 		return text;
+	}
+	public UserType getLowestPermitted() {
+		return lowestPermitted;
 	}
 }
