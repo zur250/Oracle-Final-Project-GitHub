@@ -11,6 +11,6 @@ public class EntranceMenuPane extends MenuPane {
 		super();
 		super.addButtons(register);
 		super.addButtons(signup);
-		super.setButtonOnPane();
+//		super.setButtonOnPane();
 	}
 }

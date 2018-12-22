@@ -18,12 +18,13 @@ public class MenuPane extends VBox {
 
 	protected void addButtons(Button button) {
 		buttons.add(button);
+		this.getChildren().add(button);
 	}
 	
-	protected void setButtonOnPane() {
+/*	protected void setButtonOnPane() {
 		for (Button button : buttons) {
 			this.getChildren().add(button);
 		}
-	}
+	}*/
 	
 }
