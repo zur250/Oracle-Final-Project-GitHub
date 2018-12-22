@@ -98,7 +98,7 @@ public class LoginView extends Application implements ViewInterface {
         
         //Adding text and DropShadow effect to it
         Text text = new Text("Login");
-        text.setFont(Font.font ("Verdana", 30));
+        text.setFont(ViewEffects.getHeadersFont());
         text.setEffect(ViewEffects.getShadowEffect(5, 5));
         
         //Adding text to HBox

@@ -13,13 +13,13 @@ public class DataPane extends StackPane implements MainViewInterface {
 	
 	private LoginView login;
 	private RegisterView register;
-	private CartPane cart;
-	private MainProfilePane profile;
-	private EditDiscountPane discount;
+	private CartView cart;
+	private HomepageView profile;
+	private DiscountView discount;
 	private AddProductPane addProduct;
 	private PurchasesPane purchases;
 	private NewPurchasePane purchase;
-	private UsersPane users;
+	private UsersView users;
 	
 	private ViewInterface currentPane;
 	
