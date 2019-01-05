@@ -2,8 +2,16 @@ package View;
 
 public enum ProductType {
 
-	DAIRY, GLUTEN_FREE, BREAD, MEAT, VEGETABLES, FRUITS, RELIGIOUS_ARTIFACTS;
+	DAIRY ("Dairy"), GLUTEN_FREE ("Gluten free"), BREAD ("Bread"), MEAT ("Meat"),
+	VEGETABLES ("Vegetables"), FRUITS ("Fruits"), RELIGIOUS_ARTIFACTS ("Religious artifacts");
 	
-	private ProductType () {
+	final String description;
+	
+	private ProductType (String description) {
+		this.description=description;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 }

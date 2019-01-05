@@ -1,6 +1,6 @@
 package View;
 
-public class CartItem {
+public class CartItem extends DataType {
 
 	private int productID;
 	private String productName;

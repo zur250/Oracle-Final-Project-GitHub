@@ -4,9 +4,9 @@ import javafx.scene.control.Button;
 
 public class AdminMenuPane extends CustomerWorkerMenuPane {
 
-	private Button addNewProduct = new Button(WindowType.ADD_PRODUCT.text);
-	private Button discounts = new Button(WindowType.DISCOUNTS.text);
-	private Button users = new Button(WindowType.USERS.text);
+	private Button addNewProduct = new Button(WindowType.ADD_PRODUCT.getText());
+	private Button discounts = new Button(WindowType.ROLES.getText());
+	private Button users = new Button(WindowType.USERS.getText());
 	
 	public AdminMenuPane() {
 		super();
