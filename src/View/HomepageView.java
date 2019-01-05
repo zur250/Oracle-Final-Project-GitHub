@@ -216,7 +216,7 @@ public class HomepageView extends Application implements ViewInterface {
 	public void clearData() {
 		userNameField.clear();
 		phoneField.clear();
-		passwordField.clear();
+		updatePassfield.clear();
 		balanceField.clear();
 		
 	}
