@@ -27,8 +27,14 @@ public class DBImpl implements DBInterface {
 	}
 
 	@Override
-	public void register_user(String username, String pass, int roleID, double balance) {
-		// TODO Auto-generated method stub
+	public void register_user(String username, String pass, int roleID, double balance,long phone) throws SQLException {
+		CallableStatement stmt = conn.prepareCall("{CALL Zur.users_pkg.register_user(?,?,?,?,?)}");
+		stmt.setString(1, username);
+		stmt.setString(2, pass);
+		stmt.setInt(3, roleID);
+		stmt.setLong(4, phone);
+		stmt.setDouble(5, balance);
+		stmt.execute();
 		
 	}
 
@@ -50,8 +56,11 @@ public class DBImpl implements DBInterface {
 	}
 
 	@Override
-	public void change_discount(String roleName, int discountValue) {
-		// TODO Auto-generated method stub
+	public void change_discount(String roleName, int discountValue) throws SQLException {
+		CallableStatement stmt = conn.prepareCall("{CALL Zur.users_pkg.change_discount(?,?)}");
+		stmt.setString(1, roleName);
+		stmt.setInt(2,discountValue);
+		stmt.executeUpdate();
 		
 	}
 
@@ -66,7 +75,7 @@ public class DBImpl implements DBInterface {
 		DBImpl d = new DBImpl();
 		d.dbConnect("admin", "147258");
 		try {
-			d.change_password("Admin","147258852");
+			d.register_user("test12", "test12345", 1, 1234.2,526442708);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
