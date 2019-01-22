@@ -1,6 +1,7 @@
 package Model;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public interface DBInterface {
 
@@ -11,8 +12,8 @@ public interface DBInterface {
 	void change_password(String userName,String newPass) throws SQLException;
 	void change_discount(String roleName,int discountValue) throws SQLException;
 	User get_user(String userName) throws SQLException;
-	/*
-    FUNCTION get_user(username users.username%type) return users%rowtype;
-    */
+	ArrayList<User> get_users() throws SQLException;
+	ArrayList<Role> get_roles() throws SQLException;
+	
 	
 }

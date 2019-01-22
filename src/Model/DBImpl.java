@@ -1,6 +1,7 @@
 package Model;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 import oracle.jdbc.OracleCallableStatement;
 import oracle.jdbc.OracleTypes;
@@ -87,21 +88,78 @@ public class DBImpl implements DBInterface {
 		return null;
 	}
 	
+	@Override
+	public ArrayList<User> get_users() throws SQLException {
+		try {
+			User cur_User = null;
+			ArrayList<User> users = new ArrayList<>();
+			CallableStatement stmt = conn.prepareCall("BEGIN Zur.users_pkg.get_all_users(?); END;");
+			stmt.registerOutParameter(1, OracleTypes.CURSOR);
+			stmt.execute();
+		    ResultSet rs = ((OracleCallableStatement)stmt).getCursor(1);
+		    while (rs.next()) {
+		        cur_User = new User(rs.getString("username"), rs.getString("pass"), rs.getInt("phone"), rs.getDate("joindate"), rs.getInt("roleid"), rs.getDouble("balance"));
+		        users.add(cur_User);
+
+				System.out.println(cur_User.getUserName());
+				System.out.println(cur_User.getPassword());
+				System.out.println(cur_User.getPhoneNumber());
+				System.out.println(cur_User.getBalance());
+				System.out.println(cur_User.getHire_date());
+				System.out.println(cur_User.getRoleID());
+		      }
+			return users;
+			}
+			catch(Exception e){
+				System.out.println(e.getMessage());
+			}
+		return null;
+	}
+
+	@Override
+	public ArrayList<Role> get_roles() throws SQLException {
+		try {
+			Role cur_Role = null;
+			ArrayList<Role> roles = new ArrayList<>();
+			CallableStatement stmt = conn.prepareCall("BEGIN Zur.users_pkg.get_all_roles(?); END;");
+			stmt.registerOutParameter(1, OracleTypes.CURSOR);
+			stmt.execute();
+		    ResultSet rs = ((OracleCallableStatement)stmt).getCursor(1);
+		    while (rs.next()) {
+		    	cur_Role = new Role(rs.getString("rolename"),rs.getInt("roleid"),rs.getInt("discount_percentage"));
+		        roles.add(cur_Role);
+
+				System.out.println(cur_Role.getRoleName());
+				System.out.println(cur_Role.getRoleID());
+				System.out.println(cur_Role.getPercentage());				
+		      }
+			return roles;
+			}
+			catch(Exception e){
+				System.out.println(e.getMessage());
+			}
+		return null;
+	}
+	
 	public static void main(String[] args)
 	{ 
 		DBImpl d = new DBImpl();
 		d.dbConnect("admin", "147258");
 		try {
-			User u = d.get_user("test12");
+			/*User u = d.get_user("test12");
 			System.out.println(u.getUserName());
 			System.out.println(u.getPassword());
 			System.out.println(u.getPhoneNumber());
 			System.out.println(u.getBalance());
 			System.out.println(u.getHire_date());
 			System.out.println(u.getRoleID());
+			ArrayList<User> users_lst = d.get_users();*/
+			ArrayList<Role> roles_lst = d.get_roles();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
+
 }
