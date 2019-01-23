@@ -1,26 +1,86 @@
 package Controller;
 
+import java.sql.SQLException;
+
+import Model.*;
 import View.ViewInterface;
 
 public class ControllerImpl implements ControllerInterface {//should there be a "change view" function?
 	//what about update user's role? from worker to customer in case he was fired for example...
+	private DBInterface dbModel;
+	private User curUser;
+	private Role curUserRole;
+	private final int adminRoleId = 1;
+	private final int customerRoleId = 2;
+	private final int managerRoleId = 3;
+	private final String dbAdmin = "admin";
+	private final String dbLogin = "login";
+	private final String dbManager = "manager";
+	private final String dbCustomer = "customer";
+	private final String dbPass = "147258";
+	private ViewInterface curView;
+	
+	
+	public ControllerImpl() {
+		super();
+		dbModel = new DBImpl();
+		try {
+			dbModel.dbConnect(dbLogin, dbPass);
+		} catch (Exception e1) {
+			// TODO handle db user not exsist
+			System.out.println("db User does not exist");
+		}
+	}
 
 	@Override
 	public void Connect(String userName, String password) {
-		// TODO Auto-generated method stub
+		try {
+			User temp = dbModel.get_user(userName);
+			if(temp.getPassword().equals(password)) {
+				curUser = temp;
+				curUserRole = dbModel.get_role(curUser.getRoleID());
+				switch (curUserRole.getRoleName()) {
+				case "Admin": dbModel.dbConnect(dbAdmin, dbPass);
+								break;
+				case "User": dbModel.dbConnect(dbCustomer, dbPass);
+								break;
+				case "Manager": dbModel.dbConnect(dbManager, dbPass);
+								break;
+				}
+			}
+			else {
+				// TODO show relevant error message to the user
+			}
+		} catch (Exception e) {
+			// TODO react to an error when connecting to the db
+		}
 		
 	}
 
 	@Override
-	public void register(String userName, String password, double balance, String phoneNumber) { //
-		//that would turn the price into fractions
-		// TODO Auto-generated method stub
-		
+	public void register(String userName, String password, double balance, long phoneNumber) { 
+		try {
+			dbModel.register_user(userName, password, customerRoleId, balance, phoneNumber);
+		} catch (SQLException e) {
+			// TODO handle user allready exsist or some checks did not worked well
+		}
 	}
 
 	@Override
 	public void disconnect() {//shouldn't this function know who is connected?
-		// TODO Auto-generated method stub
+		if(curUser != null) {
+			curUser = null;
+			try {
+				dbModel.dbConnect(dbLogin, dbPass);
+			} catch (Exception e) {
+				// TODO , for some reason cant connect with login user to the db. show relevant message to the user
+				System.out.println(e.getMessage());
+			}
+		}
+		else {
+			// TODO show to the user that he needs to be connected
+			System.out.println("User is not connected to the db");
+		}
 		
 	}
 
@@ -62,26 +122,77 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void updateUserBalance(int newBalance) {
-		// TODO Auto-generated method stub
+	public void updateUserBalance(double newBalance) {
+		if(curUser != null) {
+			if(newBalance >0) {
+				try {
+					double tempBalance = curUser.getBalance()+newBalance;
+					dbModel.change_Balance(curUser.getUserName(), tempBalance);
+					curUser.setBalance(tempBalance);
+				} catch (SQLException e) {
+					// TODO write proper error
+					System.out.println(e.getMessage());
+				}
+			}
+			else {
+				// TODO show to the user a message that he cant change balance to negative value
+				System.out.println("Cant change to negative value");
+			}
+		}
+		else {
+			// TODO show to the user that he needs to be connected
+			System.out.println("User is not connected to the db");
+		}
 		
 	}
 
 	@Override
-	public void updateUserPassword(String currentPassword, String newPassword) {//which user?
-		// TODO Auto-generated method stub
-		
+	public void updateUserPassword(String currentPassword, String newPassword) {
+		if(curUser != null) {
+			if(curUser.getPassword().equals(currentPassword)) {
+				try {
+					dbModel.change_password(curUser.getUserName(), newPassword);
+					curUser.setPassword(newPassword);
+				} catch (SQLException e) {
+					// TODO show error that something went wrong, maybe password isnt fit to our password policy
+					System.out.println(e.getMessage());
+				}
+			}
+			else {
+				// TODO show to the user a message that current password must be correct
+				System.out.println("Pls input a correct current password");
+			}
+		}
+		else {
+			// TODO show to the user that he needs to be connected
+			System.out.println("User is not connected to the db");
+		}
 	}
 
 	@Override
 	public void registerView(ViewInterface IView) {//wrong interface
-		// TODO Auto-generated method stub
+		curView = IView;
 		
 	}
 
 	@Override
-	public void updateUserRole(String roleID, String userName) {
-		// TODO Auto-generated method stub
+	public void updateUserRole(String roleName, String userName) {
+		try {
+			switch (roleName) {
+				case "Admin": dbModel.change_User_Role(curUser.getUserName(), adminRoleId);
+							  curUser.setRoleID(adminRoleId);
+							  break;
+				case "Customer": dbModel.change_User_Role(curUser.getUserName(), customerRoleId);
+								 curUser.setRoleID(customerRoleId);
+								 break;
+				case "Manager": dbModel.change_User_Role(curUser.getUserName(), managerRoleId);
+								curUser.setRoleID(managerRoleId);
+								break;
+			}
+		} catch (SQLException e) {
+			// Show relevant msg to the user that the user is not found
+			System.out.println("User not Found");
+		}
 		
 	}
 
