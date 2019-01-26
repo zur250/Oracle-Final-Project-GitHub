@@ -16,7 +16,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-public class RegisterView extends Application implements ViewInterface {
+public class RegisterView extends BasicView{
 
 	private Label headerLabel;
 	private Label userNameLabel;
@@ -29,7 +29,7 @@ public class RegisterView extends Application implements ViewInterface {
 	private TextField balanceField;
 	private Button submitButton;
 	
-	@Override
+	/*@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Registration Page");
 
@@ -44,6 +44,12 @@ public class RegisterView extends Application implements ViewInterface {
         
         primaryStage.show();
 		
+	}
+*/	
+	
+	public RegisterView() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 	
 	private GridPane createRegistrationFormPane() {
@@ -77,7 +83,9 @@ public class RegisterView extends Application implements ViewInterface {
         return gridPane;
     }
 	
-    private void addUIControls(GridPane gridPane) {
+    
+
+	private void addUIControls(GridPane gridPane) {
         // Add Header
         headerLabel = new Label("Registration Form");
         headerLabel.setFont(ViewEffects.getHeadersFont());
@@ -152,15 +160,16 @@ public class RegisterView extends Application implements ViewInterface {
                 	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter a balance");
                     return;
                 }
+                getCont().register(userNameField.getText(), passwordField.getText(), Double.valueOf(balanceField.getText()), Long.valueOf(phoneField.getText()));
 
                 ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Registration Successful!", "Welcome " + userNameField.getText());
             }
         });
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         launch(args);
-    }
+    }*/
 
 	@Override
 	public void updateData(DataType data) {

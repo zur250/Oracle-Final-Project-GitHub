@@ -1,6 +1,6 @@
 package Controller;
 
-import View.ViewInterface;
+import View.*;
 
 public interface ControllerInterface {
 	void Connect(String userName,String password);
@@ -14,6 +14,7 @@ public interface ControllerInterface {
 	void addProductToStore(String productName,int price,int ammountInStock); // need to check current usser permisstions
 	void updateUserBalance(double newBalance); // we have one user at a time. current user can be achived from the controller impl
 	void updateUserPassword(String currentPassword,String newPassword); // we have one user at a time. current user can be achived from controller impl
-	void registerView(ViewInterface IView);
+	void registerView(BasicView IView);
 	void updateUserRole(String roleName,String userName);
+	void deleteUser(String userName);
 }

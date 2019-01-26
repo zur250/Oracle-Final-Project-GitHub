@@ -27,7 +27,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class UsersView extends Application implements ViewInterface {
+public class UsersView extends BasicView{
 
     Stage window;
     TableView<User> table;
@@ -36,8 +36,14 @@ public class UsersView extends Application implements ViewInterface {
     GridPane bottomPane;
     private Button deletebtn;
     private Button updateRolebtn;;
+  
+    
+    public UsersView() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-    public static void main(String[] args) {
+	/*public static void main(String[] args) {
         launch(args);
     }
 
@@ -64,7 +70,7 @@ public class UsersView extends Application implements ViewInterface {
         window.setScene(scene);
         window.show();
     }
-    
+*/    
     private void setHeader() {
     	// Add Header
         Label headerLabel = new Label("Users Managment Form");
@@ -164,6 +170,7 @@ public class UsersView extends Application implements ViewInterface {
                 }
                 else
                 	// Delete
+                	getCont().deleteUser(table.getSelectionModel().getSelectedItem().getUserName());
                 	System.out.println("deleted");
             }
         });
@@ -205,6 +212,7 @@ public class UsersView extends Application implements ViewInterface {
                 		ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please select a role");
                 		return;
                 	}
+                	getCont().updateUserRole(comboBox.getSelectionModel().getSelectedItem().toString(), table.getSelectionModel().getSelectedItem().getUserName());
                 }
             }
         });

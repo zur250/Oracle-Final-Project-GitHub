@@ -24,7 +24,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class CartView extends Application implements ViewInterface {
+public class CartView extends BasicView{
 
     Stage window;
     TableView<CartItem> table;
@@ -35,7 +35,13 @@ public class CartView extends Application implements ViewInterface {
     private Button updateRolebtn;;
     private Label totalPrice;
 
-    public static void main(String[] args) {
+    
+    public CartView() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/*public static void main(String[] args) {
         launch(args);
     }
 
@@ -62,7 +68,7 @@ public class CartView extends Application implements ViewInterface {
         window.setScene(scene);
         window.show();
     }
-    
+*/    
     private void setHeader() {
     	// Add Header
         Label headerLabel = new Label("View Cart");

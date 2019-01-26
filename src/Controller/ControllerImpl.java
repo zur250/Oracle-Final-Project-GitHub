@@ -3,7 +3,8 @@ package Controller;
 import java.sql.SQLException;
 
 import Model.*;
-import View.ViewInterface;
+import Model.User;
+import View.*;
 
 public class ControllerImpl implements ControllerInterface {//should there be a "change view" function?
 	//what about update user's role? from worker to customer in case he was fired for example...
@@ -18,7 +19,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	private final String dbManager = "manager";
 	private final String dbCustomer = "customer";
 	private final String dbPass = "147258";
-	private ViewInterface curView;
+	private BasicView curView;
 	
 	
 	public ControllerImpl() {
@@ -170,7 +171,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void registerView(ViewInterface IView) {//wrong interface
+	public void registerView(BasicView IView) {//wrong interface
 		curView = IView;
 		
 	}
@@ -192,6 +193,16 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 		} catch (SQLException e) {
 			// Show relevant msg to the user that the user is not found
 			System.out.println("User not Found");
+		}
+		
+	}
+
+	@Override
+	public void deleteUser(String userName) {
+		try {
+			dbModel.delete_user(userName);
+		} catch (SQLException e) {
+			System.out.println("User does not exsist in the db?");
 		}
 		
 	}

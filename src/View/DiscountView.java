@@ -25,7 +25,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class DiscountView extends Application implements ViewInterface {
+public class DiscountView extends BasicView{
     Stage window;
     TableView<ViewRole> table;
     GridPane gridPane;
@@ -34,7 +34,12 @@ public class DiscountView extends Application implements ViewInterface {
     private Button updatebtn;
     private TextField percentage;
 
-    public static void main(String[] args) {
+    public DiscountView() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/*public static void main(String[] args) {
         launch(args);
     }
 
@@ -61,7 +66,7 @@ public class DiscountView extends Application implements ViewInterface {
         window.setScene(scene);
         window.show();
     }
-    
+*/    
     private void setHeader() {
     	// Add Header
         Label headerLabel = new Label("Discount Managment Page");
@@ -165,7 +170,7 @@ public class DiscountView extends Application implements ViewInterface {
                     	return;
                 	}
                 	
-                	System.out.println(percentage.getText());
+                	getCont().updateRoleDiscount(table.getSelectionModel().getSelectedItem().getRoleName(), Integer.valueOf(percentage.getText()));
                 }
                 	
             }

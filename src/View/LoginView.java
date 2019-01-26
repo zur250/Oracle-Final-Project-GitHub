@@ -20,7 +20,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class LoginView extends Application implements ViewInterface {
+public class LoginView extends BasicView{
 	String user = "zur";
 	String pw = "password";
 	String checkUser, checkPw;
@@ -35,8 +35,12 @@ public class LoginView extends Application implements ViewInterface {
     private Button btnLogin;
     private Label lblMessage;
     
-	
-	@Override
+    public LoginView() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+    
+	/*@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("Login Page");
         
@@ -54,8 +58,8 @@ public class LoginView extends Application implements ViewInterface {
     	primaryStage.setScene(scene);
     	primaryStage.setResizable(false);
     	primaryStage.show();
-	}
-	
+	}*/
+
 	private GridPane createLoginFormPane() {
 		bp = new BorderPane();
         bp.setPadding(new Insets(10,50,50,50));
@@ -109,7 +113,7 @@ public class LoginView extends Application implements ViewInterface {
         gridPane.setId("root");
         btnLogin.setId("btnLogin");
         text.setId("text");
-                
+        
         //Action for btnLogin
         btnLogin.setOnAction(new EventHandler<ActionEvent>() {
         	public void handle(ActionEvent event) {
@@ -124,16 +128,18 @@ public class LoginView extends Application implements ViewInterface {
                     return;
                 }        		
         		// TODO send to controller
-        		txtUserName.setText("");
+                getCont().Connect(checkUser, checkPw);
+                
+           		txtUserName.setText("");
         		pf.setText("");
         	}
         	});
 	}
 	
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         launch(args);
-    }
-
+    }*/
+	
 	@Override
 	public void updateData(DataType data) {
 		// TODO Auto-generated method stub
@@ -145,6 +151,24 @@ public class LoginView extends Application implements ViewInterface {
 		// TODO Auto-generated method stub
 		txtUserName.clear();
 		pf.clear();
+	}
+	
+	public void handle(ActionEvent event) {
+		checkUser = txtUserName.getText().toString();
+		checkPw = pf.getText().toString();
+		if(checkUser.isEmpty()) {
+            ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter your User Name");
+            return;
+        }
+        if(checkPw.isEmpty()) {
+        	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter your Password");
+            return;
+        }        		
+		// TODO send to controller
+        this.getClass();
+        
+   		txtUserName.setText("");
+		pf.setText("");
 	}
 
 }
