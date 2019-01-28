@@ -28,6 +28,7 @@ public class MainPane extends BorderPane implements MainViewInterface {
 	@Override
 	public void changeView(WindowType type) {
 		bottomPane.changeView(type);
+		setCenter((BottomPane)bottomPane);
 	}
 	
 	public void setUser(UserType userRole) {

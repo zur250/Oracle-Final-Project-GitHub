@@ -16,11 +16,11 @@ public class DataPane extends StackPane implements MainViewInterface {
   
 	private CartView cart;
 	private HomepageView profile;
-	private EditRolesPane editRoles;
+	//private EditRolesPane editRoles;
 	private DiscountView discount;
-	private AddProductPane addProduct;
+	//private AddProductPane addProduct;
 	private ViewPurchaseHistoryPane historyPurchases;
-	private ViewProductsPane products;
+	//private ViewProductsPane products;
 	private UsersView users;
 	
 	private ViewInterface currentPane;
@@ -40,19 +40,19 @@ public class DataPane extends StackPane implements MainViewInterface {
 	}
 	
 	private void generateUserWindows() {
-		cart = new CartPane(userRole);
-		profile = new MainProfilePane(userRole);
-		editRoles = new EditRolesPane();
-		addProduct = new AddProductPane();
-		historyPurchases = new ViewPurchaseHistoryPane(userRole);
-		products = new ViewProductsPane(userRole);
+		//cart = new CartPane(userRole);
+		//profile = new MainProfilePane(userRole);
+		//editRoles = new EditRolesPane();
+		//addProduct = new AddProductPane();
+		//historyPurchases = new ViewPurchaseHistoryPane(userRole);
+		//products = new ViewProductsPane(userRole);
 		users = new UsersView();
-		views.put(WindowType.CART, cart);
+		//views.put(WindowType.CART, cart);
 		views.put(WindowType.PROFILE, profile);
-		views.put(WindowType.ROLES, editRoles);
-		views.put(WindowType.ADD_PRODUCT, addProduct);
+		//views.put(WindowType.ROLES, editRoles);
+		//views.put(WindowType.ADD_PRODUCT, addProduct);
 		views.put(WindowType.PURCHASE_HISTORY, historyPurchases);
-		views.put(WindowType.PRODUCTS, products);
+		//views.put(WindowType.PRODUCTS, products);
 		views.put(WindowType.USERS, users);
 	}
 	

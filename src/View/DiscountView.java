@@ -25,7 +25,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class DiscountView extends BasicView{
+public class DiscountView implements ViewInterface{
     Stage window;
     TableView<ViewRole> table;
     GridPane gridPane;
@@ -170,7 +170,7 @@ public class DiscountView extends BasicView{
                     	return;
                 	}
                 	
-                	getCont().updateRoleDiscount(table.getSelectionModel().getSelectedItem().getRoleName(), Integer.valueOf(percentage.getText()));
+                	ControllerInstance.getInstance().getCont().updateRoleDiscount(table.getSelectionModel().getSelectedItem().getRoleName(), Integer.valueOf(percentage.getText()));
                 }
                 	
             }

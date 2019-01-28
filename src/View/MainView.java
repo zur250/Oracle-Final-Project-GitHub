@@ -8,8 +8,10 @@ public class MainView extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		MainViewInterface mainPanel = new MainPane();
+		MainViewInterface mainPanel = (MainViewInterface) new MainPane();
 		Scene scene = new Scene((MainPane)mainPanel);
+		primaryStage.setWidth(1000);
+		primaryStage.setHeight(1000);
 	    primaryStage.setTitle("ShowBorderPane"); // Set the stage title
 	    primaryStage.setScene(scene); // Place the scene in the stage
 	    primaryStage.show(); // Display the stage

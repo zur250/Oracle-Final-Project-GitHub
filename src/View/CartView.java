@@ -24,7 +24,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class CartView extends BasicView{
+public class CartView implements ViewInterface{
 
     Stage window;
     TableView<CartItem> table;

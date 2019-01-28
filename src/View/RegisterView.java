@@ -16,7 +16,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-public class RegisterView extends BasicView{
+public class RegisterView implements ViewInterface{
 
 	private Label headerLabel;
 	private Label userNameLabel;
@@ -160,7 +160,7 @@ public class RegisterView extends BasicView{
                 	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter a balance");
                     return;
                 }
-                getCont().register(userNameField.getText(), passwordField.getText(), Double.valueOf(balanceField.getText()), Long.valueOf(phoneField.getText()));
+                ControllerInstance.getInstance().getCont().register(userNameField.getText(), passwordField.getText(), Double.valueOf(balanceField.getText()), Long.valueOf(phoneField.getText()));
 
                 ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Registration Successful!", "Welcome " + userNameField.getText());
             }

@@ -19,7 +19,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	private final String dbManager = "manager";
 	private final String dbCustomer = "customer";
 	private final String dbPass = "147258";
-	private BasicView curView;
+	private ControllerInstance curView;
 	
 	
 	public ControllerImpl() {
@@ -171,7 +171,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void registerView(BasicView IView) {//wrong interface
+	public void registerView(ControllerInstance IView) {//wrong interface
 		curView = IView;
 		
 	}

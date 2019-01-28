@@ -20,7 +20,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class LoginView extends BasicView{
+public class LoginView implements ViewInterface{
 	String user = "zur";
 	String pw = "password";
 	String checkUser, checkPw;
@@ -128,7 +128,7 @@ public class LoginView extends BasicView{
                     return;
                 }        		
         		// TODO send to controller
-                getCont().Connect(checkUser, checkPw);
+                ControllerInstance.getInstance().getCont().Connect(checkUser, checkPw);
                 
            		txtUserName.setText("");
         		pf.setText("");

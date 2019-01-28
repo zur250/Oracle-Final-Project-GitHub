@@ -27,7 +27,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class UsersView extends BasicView{
+public class UsersView implements ViewInterface{
 
     Stage window;
     TableView<User> table;
@@ -170,7 +170,7 @@ public class UsersView extends BasicView{
                 }
                 else
                 	// Delete
-                	getCont().deleteUser(table.getSelectionModel().getSelectedItem().getUserName());
+                	ControllerInstance.getInstance().getCont().deleteUser(table.getSelectionModel().getSelectedItem().getUserName());
                 	System.out.println("deleted");
             }
         });
@@ -212,7 +212,7 @@ public class UsersView extends BasicView{
                 		ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please select a role");
                 		return;
                 	}
-                	getCont().updateUserRole(comboBox.getSelectionModel().getSelectedItem().toString(), table.getSelectionModel().getSelectedItem().getUserName());
+                	ControllerInstance.getInstance().getCont().updateUserRole(comboBox.getSelectionModel().getSelectedItem().toString(), table.getSelectionModel().getSelectedItem().getUserName());
                 }
             }
         });
