@@ -37,6 +37,9 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	public void Connect(String userName, String password) {
 		try {
 			User temp = dbModel.get_user(userName);
+			System.out.println(temp.getUserName());
+			System.out.println(temp.getPassword());
+			System.out.println(temp.getPassword().equals(password));
 			if(temp.getPassword().equals(password)) {
 				curUser = temp;
 				curUserRole = dbModel.get_role(curUser.getRoleID());

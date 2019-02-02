@@ -199,14 +199,14 @@ public class DBImpl implements DBInterface {
 			e1.printStackTrace();
 		}
 		try {
-			/*User u = d.get_user("test12");
+			User u = d.get_user("test12");
 			System.out.println(u.getUserName());
 			System.out.println(u.getPassword());
 			System.out.println(u.getPhoneNumber());
 			System.out.println(u.getBalance());
 			System.out.println(u.getHire_date());
 			System.out.println(u.getRoleID());
-			ArrayList<User> users_lst = d.get_users();*/
+			//ArrayList<User> users_lst = d.get_users();
 			/*ArrayList<Role> roles_lst = d.get_roles();
 			Role r = d.get_role(1);
 			System.out.println(r.getRoleID());
@@ -214,7 +214,7 @@ public class DBImpl implements DBInterface {
 			System.out.println(r.getPercentage());*/
 			//d.change_User_Role("test12", 2);
 			//d.change_Balance("test12", 1234.55);
-			d.register_user("asdasdasd","147aaa147aaa",1,1234.2,548070392);
+			//d.register_user("asdasdasd","147aaa147aaa",1,1234.2,548070392);
 			System.out.println("done");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
