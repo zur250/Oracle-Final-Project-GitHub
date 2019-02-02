@@ -16,7 +16,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-public class RegisterView implements ViewInterface{
+public class RegisterView extends GridPane implements ViewInterface{
 
 	private Label headerLabel;
 	private Label userNameLabel;
@@ -49,24 +49,25 @@ public class RegisterView implements ViewInterface{
 	
 	public RegisterView() {
 		super();
-		// TODO Auto-generated constructor stub
+		createRegistrationFormPane();
+		addUIControls();
 	}
 	
-	private GridPane createRegistrationFormPane() {
+	private void createRegistrationFormPane() {
         // Instantiate a new Grid Pane
         GridPane gridPane = new GridPane();
 
         // Position the pane at the center of the screen, both vertically and horizontally
-        gridPane.setAlignment(Pos.CENTER);
+        this.setAlignment(Pos.CENTER);
 
         // Set a padding of 20px on each side
-        gridPane.setPadding(new Insets(40, 40, 40, 40));
+        this.setPadding(new Insets(40, 40, 40, 40));
 
         // Set the horizontal gap between columns
-        gridPane.setHgap(10);
+        this.setHgap(10);
 
         // Set the vertical gap between rows
-        gridPane.setVgap(10);
+        this.setVgap(10);
 
         // Add Column Constraints
 
@@ -79,65 +80,63 @@ public class RegisterView implements ViewInterface{
         columnTwoConstrains.setHgrow(Priority.ALWAYS);
 
         gridPane.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
-
-        return gridPane;
     }
 	
     
 
-	private void addUIControls(GridPane gridPane) {
+	private void addUIControls() {
         // Add Header
         headerLabel = new Label("Registration Form");
         headerLabel.setFont(ViewEffects.getHeadersFont());
         
         headerLabel.setEffect(ViewEffects.getShadowEffect(5, 5));
-        gridPane.add(headerLabel,0,0,2,1);
-        GridPane.setHalignment(headerLabel, HPos.CENTER);
-        GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
+        this.add(headerLabel,0,0,2,1);
+        this.setHalignment(headerLabel, HPos.CENTER);
+        this.setMargin(headerLabel, new Insets(20, 0,20,0));
 
         // Add UserName Label
         userNameLabel = new Label("User Name : ");
-        gridPane.add(userNameLabel, 0,1);
+        this.add(userNameLabel, 0,1);
 
         // Add UserName Text Field
         userNameField = new TextField();
         userNameField.setPrefHeight(40);
-        gridPane.add(userNameField, 1,1);
+        this.add(userNameField, 1,1);
 
 
         // Add PhoneLabel
         phoneLabel = new Label("Phone Number: ");
-        gridPane.add(phoneLabel,0, 2);
+        this.add(phoneLabel,0, 2);
 
         // Add Phone Text Field
         phoneField = new TextField();
         phoneField.setPrefHeight(40);
-        gridPane.add(phoneField, 1, 2);
+        this.add(phoneField, 1, 2);
 
         // Add Password Label
         passwordLabel = new Label("Password : ");
-        gridPane.add(passwordLabel, 0, 3);
+        this.add(passwordLabel, 0, 3);
 
         // Add Password Field
         passwordField = new PasswordField();
         passwordField.setPrefHeight(40);
-        gridPane.add(passwordField, 1, 3);
+        this.add(passwordField, 1, 3);
         
         // Add Balance Label
         balanceLabel = new Label("Balance : ");
-        gridPane.add(balanceLabel, 0,4);
+        this.add(balanceLabel, 0,4);
 
         // Add Balance Text Field
         balanceField = new TextField();
         balanceField.setPrefHeight(40);
-        gridPane.add(balanceField, 1, 4);
+        this.add(balanceField, 1, 4);
 
         // Add Submit Button
         submitButton = new Button("Submit");
         submitButton.setPrefHeight(40);
         submitButton.setDefaultButton(true);
         submitButton.setPrefWidth(100);
-        gridPane.add(submitButton, 0,5, 2, 1);
+        this.add(submitButton, 0,5, 2, 1);
         GridPane.setHalignment(submitButton, HPos.CENTER);
         GridPane.setMargin(submitButton, new Insets(20, 0,20,0));
 
@@ -145,24 +144,24 @@ public class RegisterView implements ViewInterface{
             @Override
             public void handle(ActionEvent event) {
                 if(userNameField.getText().isEmpty()) {
-                    ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter your User Name");
+                    ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please enter your User Name");
                     return;
                 }
                 if(phoneField.getText().isEmpty()) {
-                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter your Phone Number");
+                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please enter your Phone Number");
                     return;
                 }
                 if(passwordField.getText().isEmpty()) {
-                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter a password");
+                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please enter a password");
                     return;
                 }
                 if(balanceField.getText().isEmpty()) {
-                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter a balance");
+                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please enter a balance");
                     return;
                 }
                 ControllerInstance.getInstance().getCont().register(userNameField.getText(), passwordField.getText(), Double.valueOf(balanceField.getText()), Long.valueOf(phoneField.getText()));
 
-                ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(), "Registration Successful!", "Welcome " + userNameField.getText());
+                ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, DataPane.getInstance().getScene().getWindow(), "Registration Successful!", "Welcome " + userNameField.getText());
             }
         });
     }

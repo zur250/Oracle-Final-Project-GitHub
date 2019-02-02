@@ -1,5 +1,7 @@
 package View;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 
 public class EntranceMenuPane extends MenuPane {
@@ -9,6 +11,26 @@ public class EntranceMenuPane extends MenuPane {
 	
 	public EntranceMenuPane() {
 		super();
+		
+		register.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				DataPane.getInstance().changeView(WindowType.REGIRSTRATION);
+				
+				
+			}
+		});
+		
+		signup.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				DataPane.getInstance().changeView(WindowType.LOGIN);
+				
+			}
+		});
+		
 		super.addButtons(register);
 		super.addButtons(signup);
 //		super.setButtonOnPane();

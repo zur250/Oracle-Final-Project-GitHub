@@ -2,6 +2,7 @@ package View;
 
 import java.util.HashMap;
 
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
@@ -9,6 +10,8 @@ public class DataPane extends StackPane implements MainViewInterface {
 
 	private HashMap<WindowType, ViewInterface> views = new HashMap<WindowType, ViewInterface>();
 
+	private static DataPane instance;
+	
 	private UserType userRole;
 	
 	private LoginView login;
@@ -25,13 +28,25 @@ public class DataPane extends StackPane implements MainViewInterface {
 	
 	private ViewInterface currentPane;
 	
-	public DataPane() {
+	public static DataPane getInstance() {
+		if(instance == null) {
+			instance = new DataPane();
+		}
+		return instance;
+	}
+	
+	private DataPane() {
 		super();
 		generateGeneralWindows();
 		currentPane = views.get(WindowType.LOGIN);
-		//getChildren().add(currentPane);
+		this.getChildren().add((Node) currentPane);
 	}
 	
+		
+	public ViewInterface getCurrentPane() {
+		return currentPane;
+	}
+
 	private void generateGeneralWindows() {
 		login = new LoginView();
 		register = new RegisterView();
@@ -76,7 +91,9 @@ public class DataPane extends StackPane implements MainViewInterface {
 
 	@Override
 	public void changeView(WindowType type) {
+		this.getChildren().remove(currentPane);
 		this.currentPane=this.views.get(type);
+		this.getChildren().add((Node) currentPane);
 	}
 
 	@Override

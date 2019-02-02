@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -20,12 +21,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class LoginView implements ViewInterface{
+public class LoginView extends BorderPane implements ViewInterface{
 	String user = "zur";
 	String pw = "password";
 	String checkUser, checkPw;
 	
-	private BorderPane bp;
 	private HBox hb;
 	private GridPane gridPane;
 	private Label lblUserName;
@@ -37,7 +37,13 @@ public class LoginView implements ViewInterface{
     
     public LoginView() {
 		super();
-		// TODO Auto-generated constructor stub
+		this.setPadding(new Insets(10,50,50,50));
+		gridPane = createLoginFormPane();
+        addUIControls(gridPane);
+        this.setAlignment(this, Pos.CENTER);
+        
+        this.setTop(hb);
+        this.setCenter(gridPane);
 	}
     
 	/*@Override
@@ -61,9 +67,7 @@ public class LoginView implements ViewInterface{
 	}*/
 
 	private GridPane createLoginFormPane() {
-		bp = new BorderPane();
-        bp.setPadding(new Insets(10,50,50,50));
-        
+		      
         //Adding HBox
         hb = new HBox();
         hb.setPadding(new Insets(20,20,20,30));
@@ -109,7 +113,7 @@ public class LoginView implements ViewInterface{
         hb.getChildren().add(text);
                           
         //Add ID's to Nodes
-        bp.setId("bp");
+        this.setId("bp");
         gridPane.setId("root");
         btnLogin.setId("btnLogin");
         text.setId("text");
