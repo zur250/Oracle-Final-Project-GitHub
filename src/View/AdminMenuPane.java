@@ -1,5 +1,7 @@
 package View;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 
 public class AdminMenuPane extends CustomerWorkerMenuPane {
@@ -10,6 +12,34 @@ public class AdminMenuPane extends CustomerWorkerMenuPane {
 	
 	public AdminMenuPane() {
 		super();
+		
+		users.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				DataPane.getInstance().changeView(WindowType.USERS);
+				
+			}
+		});
+		
+		discounts.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				DataPane.getInstance().changeView(WindowType.ROLES);
+				
+			}
+		});
+		
+		addNewProduct.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				DataPane.getInstance().changeView(WindowType.ADD_PRODUCT);
+				
+			}
+		});
+		
 		super.addButtons(addNewProduct);
 		super.addButtons(discounts);
 		super.addButtons(users);

@@ -5,7 +5,7 @@ public enum WindowType {
 	LOGIN ("Login", null) ,REGIRSTRATION ("Register", null), CART ("Cart", UserType.CUSTOMER),
 	PROFILE ("My Profile", UserType.CUSTOMER), ROLES("Manage Role Permissions", UserType.ADMIN),
 	ADD_PRODUCT ("Add Product to Stock", UserType.ADMIN), PURCHASE_HISTORY("Purchase History", UserType.CUSTOMER),
-	PRODUCTS("View and Purchase Products", UserType.CUSTOMER), USERS("Manage Users", UserType.ADMIN);
+	PRODUCTS("View and Purchase Products", UserType.CUSTOMER), USERS("Manage Users", UserType.ADMIN),HOMEPAGE("Home page",UserType.CUSTOMER);
 	
 	final String text;
 	final UserType lowestPermitted;

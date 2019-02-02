@@ -16,6 +16,9 @@ public class DBImpl implements DBInterface {
 	@Override
 	public void dbConnect(String userName, String password) throws Exception {
 		try {
+			if(conn!=null) {
+				conn.close();
+			}
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", userName, password);
 		}
@@ -33,13 +36,19 @@ public class DBImpl implements DBInterface {
 
 	@Override
 	public void register_user(String username, String pass, int roleID, double balance,long phone) throws SQLException {
+		try {
 		CallableStatement stmt = conn.prepareCall("{CALL Zur.users_pkg.register_user(?,?,?,?,?)}");
 		stmt.setString(1, username);
 		stmt.setString(2, pass);
 		stmt.setInt(3, roleID);
 		stmt.setLong(4, phone);
 		stmt.setDouble(5, balance);
-		stmt.execute();
+		stmt.executeUpdate();
+		}
+		catch (Throwable e) {
+			System.out.println(e.getMessage());
+		}
+		
 		
 	}
 
@@ -184,7 +193,7 @@ public class DBImpl implements DBInterface {
 	{ 
 		DBImpl d = new DBImpl();
 		try {
-			d.dbConnect("admin", "147258");
+			d.dbConnect("login", "147258");
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -203,8 +212,10 @@ public class DBImpl implements DBInterface {
 			System.out.println(r.getRoleID());
 			System.out.println(r.getRoleName());
 			System.out.println(r.getPercentage());*/
-			d.change_User_Role("test12", 2);
+			//d.change_User_Role("test12", 2);
 			//d.change_Balance("test12", 1234.55);
+			d.register_user("asdasdasd","147aaa147aaa",1,1234.2,548070392);
+			System.out.println("done");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

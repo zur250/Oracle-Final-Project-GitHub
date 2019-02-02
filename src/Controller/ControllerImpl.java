@@ -62,7 +62,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	public void register(String userName, String password, double balance, long phoneNumber) { 
 		try {
 			dbModel.register_user(userName, password, customerRoleId, balance, phoneNumber);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO handle user allready exsist or some checks did not worked well
 		}
 	}
