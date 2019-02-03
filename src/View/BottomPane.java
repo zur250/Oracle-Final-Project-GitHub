@@ -43,20 +43,24 @@ public class BottomPane extends BorderPane implements MainViewInterface {
 		this.userRole=userRole;
 		switch (userRole) {
 		case ADMIN:
+			this.getChildren().remove(menu);
 			menu = new AdminMenuPane();
-			//how do I show this menu?
+			setLeft(menu);
 			break;
 		case WORKER:
+			this.getChildren().remove(menu);
 			menu = new CustomerWorkerMenuPane();
-			//how do I show this menu?
+			setLeft(menu);
 			break;
 		case CUSTOMER:
+			this.getChildren().remove(menu);
 			menu = new CustomerWorkerMenuPane();
-			//how do I show this menu?
+			setLeft(menu);
 			break;
 		default:
+			this.getChildren().remove(menu);
 			menu = new EntranceMenuPane();
-			//how do I show this menu?
+			setLeft(menu);
 			break;
 		}
 		data.setUser(userRole);

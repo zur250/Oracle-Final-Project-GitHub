@@ -6,7 +6,7 @@ public class ControllerInstance {
 
 	private ControllerInterface cont;
 	
-	private static ControllerInstance instance = new ControllerInstance();
+	private static ControllerInstance instance;
 	
 	public static ControllerInstance getInstance() {
 		if (instance == null) {
@@ -18,6 +18,7 @@ public class ControllerInstance {
 	private ControllerInstance() {
 		super();
 		cont = new ControllerImpl();
+		System.out.println("new cont");
 	}
 	
 	public ControllerInterface getCont() {

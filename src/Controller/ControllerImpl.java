@@ -38,6 +38,9 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	public void Connect(String userName, String password) {
 		try {
 			User temp = dbModel.get_user(userName);
+			System.out.println(temp.getUserName());
+			System.out.println(temp.getPassword());
+			System.out.println(temp.getPassword().equals(password));
 			if(temp.getPassword().equals(password)) {
 				curUser = temp;
 				curUserRole = dbModel.get_role(curUser.getRoleID());
@@ -63,7 +66,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	public void register(String userName, String password, double balance, long phoneNumber) { 
 		try {
 			dbModel.register_user(userName, password, customerRoleId, balance, phoneNumber);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO handle user allready exsist or some checks did not worked well
 		}
 	}
