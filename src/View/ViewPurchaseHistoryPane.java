@@ -83,8 +83,9 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 			
 			@Override
 			public void handle(ActionEvent event) {
-				//TODO make it filter
-				System.out.println("filtered");
+				ControllerInstance.getInstance().getCont().viewPastPurchases
+				(getSelectedFocus(), getSetlectedTimeAggregation(), getSelectedGroupAggregation(),
+						getSelectedFromDate(), getSelectedUntilDate(), getSelectedProductType());
 			}
 		});
         filtersPane = new HBox(8.0, dateFilterPane, typeFilterPane, filterButton);//create the
@@ -135,7 +136,7 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
    	
    	private ObservableList<String> getProductTypes(){
    		ArrayList<String> temp = new ArrayList<>();
-   		temp.add("Choose type");
+   		temp.add("none");
    		//TODO changing to getting al product types from db
    		for (ProductType product: ProductType.values()) {
    			temp.add(product.getDescription());
@@ -169,6 +170,7 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 	private void createSelectTableTypePane() {
 		ToggleGroup showModeGroup = new ToggleGroup();
 		purchaseRadioButton.setToggleGroup(showModeGroup);
+		purchaseRadioButton.setSelected(true);
 		productsRadioButton.setToggleGroup(showModeGroup);
 		
 		purchaseRadioButton.setOnAction(e -> {
@@ -219,6 +221,15 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 			
 			@Override
 			public void handle(ActionEvent event) {
+				CheckBox temp = (CheckBox)(event.getSource());
+				if (temp.isSelected()) {
+					mineCheckBox.setSelected(false);
+					customersCheckBox.setSelected(false);
+					workersCheckBox.setSelected(false);
+					temp.setSelected(true);
+				}
+				else
+					temp.setSelected(false);
 				System.out.println("mine is selected = " + mineCheckBox.isSelected());
 				if (selectTableTypePane.getChildren().contains(customersCheckBox))
 					System.out.println("customers is selected = " + customersCheckBox.isSelected());
@@ -315,6 +326,38 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 	@Override
 	public void clearData() {
 		// TODO Auto-generated method stub
+	}
+	
+	private String getSelectedFocus() {
+		if (purchaseRadioButton.isSelected())
+			return purchaseRadioButton.getText();
+		else
+			return productsRadioButton.getText();
+	}
+	
+	private String getSetlectedTimeAggregation() {
+		return groupingComboBox.getValue();
+	}
+	
+	private String getSelectedGroupAggregation() {
+		if (mineCheckBox.isSelected())
+			return mineCheckBox.getText();
+		else if (workersCheckBox.isSelected())
+			return workersCheckBox.getText();
+		else
+			return customersCheckBox.getText();
+	}
+	
+	private LocalDate getSelectedFromDate() {
+		return startDatePicker.getValue();
+	}
+	
+	private LocalDate getSelectedUntilDate() {
+		return endDatePicker.getValue();
+	}
+	
+	private String getSelectedProductType() {
+		return productTypeComboBox.getValue();
 	}
 
 }

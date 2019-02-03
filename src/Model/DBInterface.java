@@ -1,7 +1,11 @@
 package Model;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+
+import View.DataTypeGenericForTable;
 
 public interface DBInterface {
 
@@ -17,4 +21,5 @@ public interface DBInterface {
 	Role get_role(int roleID) throws SQLException;
 	ArrayList<User> get_users() throws SQLException;
 	ArrayList<Role> get_roles() throws SQLException;
+	DataTypeGenericForTable viewPastPurchases(LocalDate from, LocalDate until, String productType, int function);
 }

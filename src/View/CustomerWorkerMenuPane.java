@@ -55,6 +55,7 @@ public class CustomerWorkerMenuPane extends MenuPane {
 			
 			@Override
 			public void handle(ActionEvent event) {
+				ControllerInstance.getInstance().getCont().disconnect();
 				DataPane.getInstance().changeView(WindowType.LOGIN);
 				
 			}

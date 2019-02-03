@@ -1,5 +1,7 @@
 package Controller;
 
+import java.time.LocalDate;
+
 import View.*;
 
 public interface ControllerInterface {
@@ -14,7 +16,10 @@ public interface ControllerInterface {
 	void addProductToStore(String productName,int price,int ammountInStock); // need to check current usser permisstions
 	void updateUserBalance(double newBalance); // we have one user at a time. current user can be achived from the controller impl
 	void updateUserPassword(String currentPassword,String newPassword); // we have one user at a time. current user can be achived from controller impl
-	void registerView(ControllerInstance IView);
+	void registerView(MainViewInterface IView);
 	void updateUserRole(String roleName,String userName);
 	void deleteUser(String userName);
+	void viewPastPurchases(String focusOn, String timeAggregation, String groupAggregation, LocalDate from,
+			LocalDate until, String productType);
+	User getCurUser();
 }

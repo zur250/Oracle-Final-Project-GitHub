@@ -1,6 +1,7 @@
 package Controller;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import Model.*;
 import Model.User;
@@ -19,7 +20,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	private final String dbManager = "manager";
 	private final String dbCustomer = "customer";
 	private final String dbPass = "147258";
-	private ControllerInstance curView;
+	private MainViewInterface curView;
 	
 	
 	public ControllerImpl() {
@@ -45,10 +46,16 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 				curUserRole = dbModel.get_role(curUser.getRoleID());
 				switch (curUserRole.getRoleName()) {
 				case "Admin": dbModel.dbConnect(dbAdmin, dbPass);
+								curView.setUser(UserType.ADMIN);
+								curView.changeView(WindowType.HOMEPAGE);
 								break;
 				case "User": dbModel.dbConnect(dbCustomer, dbPass);
+								curView.setUser(UserType.CUSTOMER);
+								curView.changeView(WindowType.HOMEPAGE);
 								break;
 				case "Manager": dbModel.dbConnect(dbManager, dbPass);
+								curView.setUser(UserType.WORKER);
+								curView.changeView(WindowType.HOMEPAGE);
 								break;
 				}
 			}
@@ -56,7 +63,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 				// TODO show relevant error message to the user
 			}
 		} catch (Exception e) {
-			// TODO react to an error when connecting to the db
+			System.out.println(e.getMessage());
 		}
 		
 	}
@@ -76,6 +83,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 			curUser = null;
 			try {
 				dbModel.dbConnect(dbLogin, dbPass);
+				curView.setUser(UserType.ANONMOUS);
 			} catch (Exception e) {
 				// TODO , for some reason cant connect with login user to the db. show relevant message to the user
 				System.out.println(e.getMessage());
@@ -174,7 +182,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void registerView(ControllerInstance IView) {//wrong interface
+	public void registerView(MainViewInterface IView) {//wrong interface
 		curView = IView;
 		
 	}
@@ -209,5 +217,37 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 		}
 		
 	}
+
+	@Override
+	public void viewPastPurchases(String focusOn, String timeAggregation, String groupAggregation, LocalDate from,
+			LocalDate until, String productType) {
+		int temp = 0;
+		if (focusOn.equals("Products purchased"))
+			temp+=100;
+		if (timeAggregation.equals("Monthly"))
+			temp+=10;
+		else if (timeAggregation.equals("Yearly"))
+			temp+=20;
+		if (groupAggregation.equals("Workers"))
+			temp+=30;
+		else if (groupAggregation.equals("Customers"))
+			temp+=60;
+		if (from!=null)
+			temp+=1;
+		if (until!=null)
+			temp+=2;
+		dbModel.viewPastPurchases(from, until, productType, temp);
+		
+	}
+	
+	@Override
+	public View.User getCurUser() {
+		View.User u =new View.User(curUser.getUserName(), String.valueOf(curUser.getPhoneNumber()), curUserRole.getRoleName(), curUser.getBalance(), 2, curUser.getHire_date());
+		return u;
+	}
+	
+	
+	
+	
 
 }

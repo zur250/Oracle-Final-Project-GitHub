@@ -38,6 +38,7 @@ public class DataPane extends StackPane implements MainViewInterface {
 	private DataPane() {
 		super();
 		generateGeneralWindows();
+		generateUserWindows();
 		currentPane = views.get(WindowType.LOGIN);
 		this.getChildren().add((Node) currentPane);
 	}
@@ -56,14 +57,14 @@ public class DataPane extends StackPane implements MainViewInterface {
 	
 	private void generateUserWindows() {
 		//cart = new CartPane(userRole);
-		//profile = new MainProfilePane(userRole);
+		profile = new HomepageView();
 		//editRoles = new EditRolesPane();
 		//addProduct = new AddProductPane();
 		//historyPurchases = new ViewPurchaseHistoryPane(userRole);
 		//products = new ViewProductsPane(userRole);
 		users = new UsersView();
 		//views.put(WindowType.CART, cart);
-		views.put(WindowType.PROFILE, profile);
+		views.put(WindowType.HOMEPAGE, profile);
 		//views.put(WindowType.ROLES, editRoles);
 		//views.put(WindowType.ADD_PRODUCT, addProduct);
 		views.put(WindowType.PURCHASE_HISTORY, historyPurchases);
@@ -93,12 +94,16 @@ public class DataPane extends StackPane implements MainViewInterface {
 	public void changeView(WindowType type) {
 		this.getChildren().remove(currentPane);
 		this.currentPane=this.views.get(type);
+		if(type == WindowType.HOMEPAGE)
+		{
+			HomepageView home = (HomepageView) this.currentPane;
+			home.setCur_User(ControllerInstance.getInstance().getCont().getCurUser());
+		}
 		this.getChildren().add((Node) currentPane);
 	}
 
 	@Override
 	public void setUser(UserType userRole) {
 		this.userRole = userRole;
-		generateUserWindows();
 	}
 }

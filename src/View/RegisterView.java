@@ -162,6 +162,7 @@ public class RegisterView extends GridPane implements ViewInterface{
                 ControllerInstance.getInstance().getCont().register(userNameField.getText(), passwordField.getText(), Double.valueOf(balanceField.getText()), Long.valueOf(phoneField.getText()));
 
                 ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, DataPane.getInstance().getScene().getWindow(), "Registration Successful!", "Welcome " + userNameField.getText());
+                clearData();
             }
         });
     }

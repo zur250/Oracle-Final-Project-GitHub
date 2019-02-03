@@ -14,6 +14,7 @@ public class BottomPane extends BorderPane implements MainViewInterface {
 		menu = new EntranceMenuPane();
 		setLeft(menu);
 		setCenter((DataPane)data);
+		ControllerInstance.getInstance().getCont().registerView(this);
 		
 	}
 	
