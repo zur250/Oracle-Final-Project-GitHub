@@ -1,6 +1,7 @@
 package Controller;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import Model.*;
 import Model.User;
@@ -209,5 +210,29 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 		}
 		
 	}
+
+	@Override
+	public void viewPastPurchases(String focusOn, String timeAggregation, String groupAggregation, LocalDate from,
+			LocalDate until, String productType) {
+		int temp = 0;
+		if (focusOn.equals("Products purchased"))
+			temp+=100;
+		if (timeAggregation.equals("Monthly"))
+			temp+=10;
+		else if (timeAggregation.equals("Yearly"))
+			temp+=20;
+		if (groupAggregation.equals("Workers"))
+			temp+=30;
+		else if (groupAggregation.equals("Customers"))
+			temp+=60;
+		if (from!=null)
+			temp+=1;
+		if (until!=null)
+			temp+=2;
+		dbModel.viewPastPurchases(from, until, productType, temp);
+		
+	}
+	
+	
 
 }

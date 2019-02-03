@@ -1,5 +1,7 @@
 package Controller;
 
+import java.time.LocalDate;
+
 import View.*;
 
 public interface ControllerInterface {
@@ -17,4 +19,6 @@ public interface ControllerInterface {
 	void registerView(ControllerInstance IView);
 	void updateUserRole(String roleName,String userName);
 	void deleteUser(String userName);
+	void viewPastPurchases(String focusOn, String timeAggregation, String groupAggregation, LocalDate from,
+			LocalDate until, String productType);
 }
