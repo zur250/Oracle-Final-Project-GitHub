@@ -199,9 +199,17 @@ public class HomepageView extends GridPane implements ViewInterface {
             		ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please enter a new password");
             		return;
             	}
-            	ControllerInstance.getInstance().getCont().updateUserPassword(curPassfield.getText(), updatePassfield.getText());
-            	curPassfield.clear();
-            	updatePassfield.clear();
+            	try {
+					ControllerInstance.getInstance().getCont().updateUserPassword(curPassfield.getText(), updatePassfield.getText());
+					curPassfield.clear();
+	            	updatePassfield.clear();
+	            	ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, DataPane.getInstance().getScene().getWindow(), "Done!", "Password have been updated");
+				} catch (Exception e) {
+					curPassfield.clear();
+	            	updatePassfield.clear();
+					ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+				}
+            	
             }
         });
         
@@ -210,7 +218,7 @@ public class HomepageView extends GridPane implements ViewInterface {
         add(updateBlanacelbl, 0, 7);
 
         // Update Balance Field
-        updateBlanacefield = new PasswordField();
+        updateBlanacefield = new TextField();
         updateBlanacefield.setPrefHeight(40);
         updateBlanacefield.setMaxWidth(100);
         add(updateBlanacefield, 1, 7);
@@ -226,10 +234,22 @@ public class HomepageView extends GridPane implements ViewInterface {
             @Override
             public void handle(ActionEvent event) {
             	if(updateBlanacefield.getText().isEmpty()) {
-            		ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please enter a deposit value");
-            		return;
-            	}
-            }
+            			ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please enter a deposit value");
+                		return;
+                	}
+                	try {
+						ControllerInstance.getInstance().getCont().updateUserBalance(Double.parseDouble(updateBlanacefield.getText()));
+						balanceField.setText(String.valueOf((Double.parseDouble(updateBlanacefield.getText())+Double.parseDouble(balanceField.getText()))));
+	                	updateBlanacefield.clear();
+	                	ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, DataPane.getInstance().getScene().getWindow(), "Balance updated Successfully!", "New Balance : " +balanceField.getText());
+					}
+					catch (Exception e) {
+						updateBlanacefield.clear();
+						ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+					}
+                	
+                	
+                }
         });
 
 

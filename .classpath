@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="jars"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/Guy Shakked/GitHub/Oracle-Final-Project-GitHub/jars/ojdbc6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Zur/Desktop/Oracle Final Project/Oracle-Final-Project-GitHub/jars/ojdbc6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

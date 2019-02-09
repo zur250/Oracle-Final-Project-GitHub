@@ -2,6 +2,9 @@ package Controller;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 import Model.*;
 import Model.User;
@@ -53,7 +56,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 								curView.setUser(UserType.CUSTOMER);
 								curView.changeView(WindowType.HOMEPAGE);
 								break;
-				case "Manager": dbModel.dbConnect(dbManager, dbPass);
+				case "Employee": dbModel.dbConnect(dbManager, dbPass);
 								curView.setUser(UserType.WORKER);
 								curView.changeView(WindowType.HOMEPAGE);
 								break;
@@ -110,9 +113,14 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void updateRoleDiscount(String roleID,int percentage) {//which role?
-		// TODO Auto-generated method stub
-		
+	public void updateRoleDiscount(String roleName,int percentage) throws Exception {
+		try {
+			dbModel.change_discount(roleName, percentage);
+			System.out.println("Update user : "+roleName+" to percentage of : " + percentage);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new Exception(e.getMessage());
+		}
 	}
 
 	@Override
@@ -134,7 +142,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void updateUserBalance(double newBalance) {
+	public void updateUserBalance(double newBalance) throws Exception {
 		if(curUser != null) {
 			if(newBalance >0) {
 				try {
@@ -148,31 +156,26 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 			}
 			else {
 				// TODO show to the user a message that he cant change balance to negative value
-				System.out.println("Cant change to negative value");
+				throw new Exception("Cant change to negative value");
 			}
 		}
 		else {
 			// TODO show to the user that he needs to be connected
-			System.out.println("User is not connected to the db");
+			throw new Exception("User is not connected to the db");
 		}
 		
 	}
 
 	@Override
-	public void updateUserPassword(String currentPassword, String newPassword) {
+	public void updateUserPassword(String currentPassword, String newPassword) throws Exception {
 		if(curUser != null) {
 			if(curUser.getPassword().equals(currentPassword)) {
-				try {
-					dbModel.change_password(curUser.getUserName(), newPassword);
-					curUser.setPassword(newPassword);
-				} catch (SQLException e) {
-					// TODO show error that something went wrong, maybe password isnt fit to our password policy
-					System.out.println(e.getMessage());
-				}
+				dbModel.change_password(curUser.getUserName(), newPassword);
+				curUser.setPassword(newPassword);
 			}
 			else {
 				// TODO show to the user a message that current password must be correct
-				System.out.println("Pls input a correct current password");
+				throw new Exception("Pls input a correct current password");
 			}
 		}
 		else {
@@ -188,32 +191,29 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void updateUserRole(String roleName, String userName) {
+	public void updateUserRole(String roleName, String userName) throws Exception {
 		try {
 			switch (roleName) {
-				case "Admin": dbModel.change_User_Role(curUser.getUserName(), adminRoleId);
-							  curUser.setRoleID(adminRoleId);
+				case "Admin": dbModel.change_User_Role(userName, adminRoleId);
 							  break;
-				case "Customer": dbModel.change_User_Role(curUser.getUserName(), customerRoleId);
-								 curUser.setRoleID(customerRoleId);
+				case "Customer": dbModel.change_User_Role(userName, customerRoleId);
 								 break;
-				case "Manager": dbModel.change_User_Role(curUser.getUserName(), managerRoleId);
-								curUser.setRoleID(managerRoleId);
+				case "Employee": dbModel.change_User_Role(userName, managerRoleId);
 								break;
 			}
 		} catch (SQLException e) {
 			// Show relevant msg to the user that the user is not found
-			System.out.println("User not Found");
+			throw new Exception(e.getMessage());
 		}
 		
 	}
 
 	@Override
-	public void deleteUser(String userName) {
+	public void deleteUser(String userName) throws Exception {
 		try {
 			dbModel.delete_user(userName);
 		} catch (SQLException e) {
-			System.out.println("User does not exsist in the db?");
+			throw new Exception(e.getMessage());
 		}
 		
 	}
@@ -244,6 +244,38 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	public View.User getCurUser() {
 		View.User u =new View.User(curUser.getUserName(), String.valueOf(curUser.getPhoneNumber()), curUserRole.getRoleName(), curUser.getBalance(), 2, curUser.getHire_date());
 		return u;
+	}
+
+	@Override
+	public ArrayList<ViewRole> get_roles() {
+		try {
+			ArrayList<Role> dbRoles = dbModel.get_roles();
+			ArrayList<ViewRole> roles = new ArrayList<>();
+			for (Role dbRole : dbRoles) {
+				roles.add(new ViewRole(dbRole.getRoleName(), dbRole.getPercentage()));
+			}
+			return roles;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public ArrayList<View.User> get_users() {
+		try {
+			ArrayList<Model.User> dbUsers= dbModel.get_users();
+			ArrayList<View.User> users = new ArrayList<>();
+			for (Model.User dbUser : dbUsers) {
+				users.add(new View.User(dbUser.getUserName(), Integer.toString(dbUser.getPhoneNumber()), Integer.toString(dbUser.getRoleID()), dbUser.getBalance(), Calendar.getInstance().getTime().getYear()-dbUser.getHire_date().getYear(), dbUser.getHire_date()));
+			}
+			return users;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	

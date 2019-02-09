@@ -58,14 +58,14 @@ public class DataPane extends StackPane implements MainViewInterface {
 	private void generateUserWindows() {
 		//cart = new CartPane(userRole);
 		profile = new HomepageView();
-		//editRoles = new EditRolesPane();
+		discount = new DiscountView();
 		//addProduct = new AddProductPane();
 		//historyPurchases = new ViewPurchaseHistoryPane(userRole);
 		//products = new ViewProductsPane(userRole);
 		users = new UsersView();
 		//views.put(WindowType.CART, cart);
 		views.put(WindowType.HOMEPAGE, profile);
-		//views.put(WindowType.ROLES, editRoles);
+		views.put(WindowType.DISCOUNT, discount);
 		//views.put(WindowType.ADD_PRODUCT, addProduct);
 		views.put(WindowType.PURCHASE_HISTORY, historyPurchases);
 		//views.put(WindowType.PRODUCTS, products);
@@ -98,6 +98,10 @@ public class DataPane extends StackPane implements MainViewInterface {
 		{
 			HomepageView home = (HomepageView) this.currentPane;
 			home.setCur_User(ControllerInstance.getInstance().getCont().getCurUser());
+		}
+		else if(type == WindowType.USERS) {
+			UsersView UsersPane = (UsersView) this.currentPane;
+			UsersPane.refreshTable();
 		}
 		this.getChildren().add((Node) currentPane);
 	}

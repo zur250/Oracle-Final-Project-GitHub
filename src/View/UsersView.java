@@ -27,11 +27,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class UsersView implements ViewInterface{
+public class UsersView extends GridPane implements ViewInterface{
 
     Stage window;
     TableView<User> table;
-    GridPane gridPane;
     VBox vBox;
     GridPane bottomPane;
     private Button deletebtn;
@@ -40,7 +39,20 @@ public class UsersView implements ViewInterface{
     
     public UsersView() {
 		super();
-		// TODO Auto-generated constructor stub
+		createFormPane();
+        
+        setHeader();
+        table = createUsersTable();
+        
+        vBox = new VBox();   
+        vBox.getChildren().addAll(table);
+        add(vBox, 0, 1,4,1);
+        GridPane.setHalignment(vBox, HPos.CENTER);
+        GridPane.setValignment(vBox, VPos.CENTER);
+        GridPane.setMargin(vBox, new Insets(10, 0,0,0));
+
+        createBootomPane();
+
 	}
 
 	/*public static void main(String[] args) {
@@ -77,7 +89,7 @@ public class UsersView implements ViewInterface{
         headerLabel.setFont(ViewEffects.getHeadersFont());
         
         headerLabel.setEffect(ViewEffects.getShadowEffect(5, 5));
-        gridPane.add(headerLabel,0,0,2,1);
+        add(headerLabel,0,0,2,1);
         GridPane.setHalignment(headerLabel, HPos.CENTER);
         GridPane.setValignment(headerLabel, VPos.TOP);
         GridPane.setMargin(headerLabel, new Insets(10, 0,0,0));
@@ -120,21 +132,19 @@ public class UsersView implements ViewInterface{
 
     }
 
-	private GridPane createFormPane() {
-        // Instantiate a new Grid Pane
-        GridPane gridPane = new GridPane();
+	private void createFormPane() {
 
         // Position the pane at the center of the screen, both vertically and horizontally
         //gridPane.setAlignment(Pos.CENTER);
 
         // Set a padding of 20px on each side
-        gridPane.setPadding(new Insets(20, 20, 20, 20));
+        setPadding(new Insets(20, 20, 20, 20));
 
         // Set the horizontal gap between columns
-        gridPane.setHgap(10);
+        setHgap(10);
 
         // Set the vertical gap between rows
-        gridPane.setVgap(10);
+        setVgap(10);
 
         // Add Column Constraints
 
@@ -146,9 +156,7 @@ public class UsersView implements ViewInterface{
         ColumnConstraints columnTwoConstrains = new ColumnConstraints(200,200, Double.MAX_VALUE);
         columnTwoConstrains.setHgrow(Priority.ALWAYS);
 
-        gridPane.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
-
-        return gridPane;
+        getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
     }
 
 	private void createBootomPane() {
@@ -158,7 +166,7 @@ public class UsersView implements ViewInterface{
         deletebtn.setPrefHeight(40);
         deletebtn.setDefaultButton(true);
         deletebtn.setPrefWidth(100);
-        gridPane.add(deletebtn, 0,2, 2, 1);
+        add(deletebtn, 0,2, 2, 1);
         GridPane.setHalignment(deletebtn, HPos.LEFT);
         GridPane.setMargin(deletebtn, new Insets(20, 0,20,0));
 
@@ -166,12 +174,15 @@ public class UsersView implements ViewInterface{
             @Override
             public void handle(ActionEvent event) {
                 if(table.getSelectionModel().getSelectedItem() == null) {
-                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please select a user to delete");
-                }
-                else
-                	// Delete
-                	ControllerInstance.getInstance().getCont().deleteUser(table.getSelectionModel().getSelectedItem().getUserName());
-                	System.out.println("deleted");
+                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please select a user to delete");
+                } else
+					try {
+						ControllerInstance.getInstance().getCont().deleteUser(table.getSelectionModel().getSelectedItem().getUserName());
+						refreshTable();
+	                	ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, DataPane.getInstance().getScene().getWindow(), "Form Error!", "User have been deleted!");
+					} catch (Exception e) {
+						ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+					}
             }
         });
 
@@ -180,7 +191,7 @@ public class UsersView implements ViewInterface{
         updateRolebtn.setPrefHeight(40);
         updateRolebtn.setDefaultButton(true);
         updateRolebtn.setPrefWidth(110);
-        gridPane.add(updateRolebtn, 1,2, 2, 1);
+        add(updateRolebtn, 1,2, 2, 1);
         GridPane.setHalignment(updateRolebtn, HPos.LEFT);
         GridPane.setMargin(updateRolebtn, new Insets(20, 0,20,0));
         
@@ -194,7 +205,7 @@ public class UsersView implements ViewInterface{
     		
     		comboBox.setPrefHeight(40);    		
     		comboBox.setPrefWidth(100);
-            gridPane.add(comboBox, 2,2,2,1); 
+            add(comboBox, 2,2,2,1); 
             GridPane.setHalignment(comboBox, HPos.LEFT);
             GridPane.setMargin(comboBox, new Insets(20, 0,20,0));
            
@@ -202,34 +213,50 @@ public class UsersView implements ViewInterface{
         updateRolebtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(table.getSelectionModel().getSelectedItem() == null) {
-                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please select a user to update");
+            	User currentSelected = table.getSelectionModel().getSelectedItem();
+                if(currentSelected == null) {
+                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please select a user to update");
                 	return;
                 }
                 else {
                 	// Update
                 	if(comboBox.getSelectionModel().getSelectedItem() == null) {
-                		ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please select a role");
+                		ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please select a role");
                 		return;
                 	}
-                	ControllerInstance.getInstance().getCont().updateUserRole(comboBox.getSelectionModel().getSelectedItem().toString(), table.getSelectionModel().getSelectedItem().getUserName());
+                	try {
+						ControllerInstance.getInstance().getCont().updateUserRole(comboBox.getSelectionModel().getSelectedItem().toString(), table.getSelectionModel().getSelectedItem().getUserName());
+						refreshTable();
+	                	ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Role Updated Sucssesfully");
+					} catch (Exception e) {
+						ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+					}
                 }
             }
         });
 
 	}
+	
+	public void refreshTable() {
+		table.setItems(null);
+    	table.setItems(getUsers());
+    	table.refresh();
+	}
     
     //Get all of the products
     public ObservableList<User> getUsers(){
-        ObservableList<User> users = FXCollections.observableArrayList();
+        /*ObservableList<User> users = FXCollections.observableArrayList();
         users.add(new User("Zur","0548070390","Customer",456.56,2.5,new Date(1993,11,24)));
         users.add(new User("Guy","0548070391","Admin",123.56,2.5,new Date(1990,11,24)));
         users.add(new User("Oren","0548070392","Woker",147.56,2.5,new Date(1989,11,24)));
         users.add(new User("Oren","0548070392","Woker",147.56,2.5,new Date(1989,11,24)));
         users.add(new User("Oren","0548070392","Woker",147.56,2.5,new Date(1989,11,24)));
         users.add(new User("Oren","0548070392","Woker",147.56,2.5,new Date(1989,11,24)));
-        users.add(new User("Oren","0548070392","Woker",147.56,2.5,new Date(1989,11,24)));
-        
+        users.add(new User("Oren","0548070392","Woker",147.56,2.5,new Date(1989,11,24)));*/
+    	ObservableList<User> users = FXCollections.observableArrayList();
+    			for (User user : ControllerInstance.getInstance().getCont().get_users()) {
+					users.add(user);
+				}
         return users;
     }
 
