@@ -2,7 +2,7 @@ package View;
 
 public enum ProductType {
 
-	DAIRY ("Dairy"), GLUTEN_FREE ("Gluten free"), BREAD ("Bread"), MEAT ("Meat"),
+	DAIRY ("Dairy"), GLUTEN_FREE ("Gluten free"), BREAD ("Bread"), MEAT ("meat"),
 	VEGETABLES ("Vegetables"), FRUITS ("Fruits"), RELIGIOUS_ARTIFACTS ("Religious artifacts");
 	
 	final String description;

@@ -18,7 +18,7 @@ public class ControllerInstance {
 	private ControllerInstance() {
 		super();
 		cont = new ControllerImpl();
-		System.out.println("new cont");
+		//System.out.println("new cont");
 	}
 	
 	public ControllerInterface getCont() {
