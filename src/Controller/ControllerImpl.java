@@ -24,6 +24,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	private final String dbCustomer = "customer";
 	private final String dbPass = "147258";
 	private MainViewInterface curView;
+	private int cartID;
 	
 	
 	public ControllerImpl() {
@@ -59,7 +60,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 				case "Employee": dbModel.dbConnect(dbManager, dbPass);
 								curView.setUser(UserType.WORKER);
 								curView.changeView(WindowType.HOMEPAGE);
-								break;
+								break;	
 				}
 			}
 			else {
@@ -98,18 +99,50 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 		}
 		
 	}
-
+	/*This should be initiated when a login occurs*/
 	@Override
-	public void addProductToCart(String productID, int ammount) {//how do I know which cart? is the user stored in the controller
-		//or should it be passed as an argument in this function?
-		// TODO Auto-generated method stub
-		
+	public void createNewCart() {
+		this.cartID=dbModel.create_new_cart("apachi");
+	}
+	
+	@Override
+	public void deleteCart() {
+		try {
+			dbModel.delete_cart(cartID);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
-	public void removeProductFromCart(String productID, int ammount) {//same question as above
-		// TODO Auto-generated method stub
-		
+	public void addProductToCart(int productID, int amount) {
+		try {
+			dbModel.add_product_to_cart(22, productID, amount);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void removeProductFromCart(int productID) {//same question as above
+		try {
+			dbModel.remove_product_from_cart(22, productID);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void purchase() {
+		try {
+			dbModel.purchase(22);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -122,23 +155,61 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 			throw new Exception(e.getMessage());
 		}
 	}
-
+	
 	@Override
-	public void updateProdctInStore(String productID, String productName, double price, int ammountInStock) {
-		// TODO Auto-generated method stub
-		
+	public DataTypeGenericForTable get_all_produces() {
+		return dbModel.get_products();
 	}
 
 	@Override
-	public void deleteProductFromStore(String productID) {//same as above
-		// TODO Auto-generated method stub
-		
+	public void updatePrice(int productID, double newPrice) {
+		try {
+			dbModel.update_product_price(productID, newPrice);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+
+	@Override
+	public void updateAllPrices(double percent) {
+		try {
+			dbModel.update_prices(percent);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
-	public void addProductToStore(String productName, int price, int ammountInStock) {//is the price int?
-		// TODO Auto-generated method stub
-		
+	public void updateAmount(int productID, int addedAmount) {
+		try {
+			dbModel.update_amount(productID, addedAmount);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
+
+	@Override
+	public void deleteProductFromStore(int productID) {
+		try {
+			dbModel.delete_product(productID);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void addProductToStore(String productName, String type, double price, int ammountInStock) {
+		try {
+			dbModel.add_product(productName, type, price, ammountInStock);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -219,8 +290,8 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void viewPastPurchases(String focusOn, String timeAggregation, String groupAggregation, LocalDate from,
-			LocalDate until, String productType) {
+	public DataTypeGenericForTable viewPastPurchases(String username, String focusOn, String timeAggregation, String groupAggregation, LocalDate from,
+			LocalDate until, String productType, String sorting) {
 		int temp = 0;
 		if (focusOn.equals("Products purchased"))
 			temp+=100;
@@ -236,7 +307,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 			temp+=1;
 		if (until!=null)
 			temp+=2;
-		dbModel.viewPastPurchases(from, until, productType, temp);
+		return dbModel.viewPastPurchases(username, from, until, productType, sorting, temp);
 		
 	}
 	
@@ -278,6 +349,13 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 		return null;
 	}
 	
+	@Override
+	public DataTypeGenericForTable getCartDetails() {
+		return dbModel.getCartDetails(22);
+	}
 	
-
+	@Override
+	public double getPaymentLeft() {
+		return dbModel.get_payment_left(22);
+	}
 }

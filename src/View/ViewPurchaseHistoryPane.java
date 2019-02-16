@@ -33,6 +33,8 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 	private Label headerLabel;
 	
 	private UserType user = UserType.ADMIN;
+	
+	private DataTypeGenericForTable data;
 		
 	private ComboBox<String> productTypeComboBox = new ComboBox<String>();
 	private ComboBox<String> groupingComboBox = new ComboBox<String>();
@@ -40,8 +42,8 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 	private RadioButton purchaseRadioButton = new RadioButton("Purchases");
 	private RadioButton productsRadioButton = new RadioButton("Products purchased");
 	
-	private RadioButton allProductsRadioButton = new RadioButton("No sorting");
-	private RadioButton productTypesRadioButton = new RadioButton("Sort by product types");
+	private RadioButton sortAscendingRadioButton = new RadioButton("sort ascending");
+	private RadioButton sortDescendingRadioButton = new RadioButton("sort descending");
 	
 	private CheckBox mineCheckBox = new CheckBox("Mine");
 	private CheckBox workersCheckBox = new CheckBox("Workers");
@@ -83,9 +85,19 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 			
 			@Override
 			public void handle(ActionEvent event) {
-				ControllerInstance.getInstance().getCont().viewPastPurchases
-				(getSelectedFocus(), getSetlectedTimeAggregation(), getSelectedGroupAggregation(),
-						getSelectedFromDate(), getSelectedUntilDate(), getSelectedProductType());
+				try {
+					data = ControllerInstance.getInstance().getCont().viewPastPurchases
+					("apachi", getSelectedFocus(), getSetlectedTimeAggregation(), getSelectedGroupAggregation(),
+							getSelectedFromDate(), getSelectedUntilDate(), getSelectedProductType(), getSelectedSortingType());
+				mainPane.getChildren().remove(tablePane);
+				tablePane = new GenericTablePane(data);
+				mainPane.add(tablePane, 0, 3, 4, 1);
+		        GridPane.setHalignment(tablePane, HPos.CENTER);
+		        GridPane.setValignment(tablePane, VPos.TOP);
+		        GridPane.setMargin(tablePane, new Insets(10, 0,0,0));
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
 			}
 		});
         filtersPane = new HBox(8.0, dateFilterPane, typeFilterPane, filterButton);//create the
@@ -176,31 +188,18 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 		purchaseRadioButton.setOnAction(e -> {
 			if (purchaseRadioButton.isSelected()){
 				System.out.println("Purchase Button Selected");
-				if (selectTableTypePane.getChildren().contains(allProductsRadioButton)) {
-					selectTableTypePane.getChildren().remove(allProductsRadioButton);
-					selectTableTypePane.getChildren().remove(productTypesRadioButton);
+				if (selectTableTypePane.getChildren().contains(sortAscendingRadioButton)) {
+					selectTableTypePane.getChildren().remove(sortAscendingRadioButton);
+					selectTableTypePane.getChildren().remove(sortDescendingRadioButton);
 				}
-				mainPane.getChildren().remove(tablePane);
-				DataTypeGenericForTable data = getDataForTable();//just for testing
-				tablePane = new GenericTablePane(data);
-				mainPane.add(tablePane, 0, 3, 4, 1);
-		        GridPane.setHalignment(tablePane, HPos.CENTER);
-		        GridPane.setValignment(tablePane, VPos.TOP);
-		        GridPane.setMargin(tablePane, new Insets(10, 0,0,0));
 			}
 		});
 		
 		productsRadioButton.setOnAction(e -> {
 			if (productsRadioButton.isSelected()) {
 				System.out.println("Products Button Selected");
-				selectTableTypePane.getChildren().addAll(allProductsRadioButton, productTypesRadioButton);
-				mainPane.getChildren().remove(tablePane);
-				DataTypeGenericForTable data = getDataForTable2();//just for testing
-				tablePane = new GenericTablePane(data);
-				mainPane.add(tablePane, 0, 3, 4, 1);
-		        GridPane.setHalignment(tablePane, HPos.CENTER);
-		        GridPane.setValignment(tablePane, VPos.TOP);
-		        GridPane.setMargin(tablePane, new Insets(10, 0,0,0));
+				selectTableTypePane.getChildren().addAll(sortAscendingRadioButton, sortDescendingRadioButton);
+				sortAscendingRadioButton.setSelected(true);
 			}
 		});
 		ObservableList<String> groupingTypes = getGroupingTypes();
@@ -243,8 +242,8 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 		workersCheckBox.setOnAction(checkBoxHandler);
 		
 		ToggleGroup selectProductfiltering = new ToggleGroup();
-		productTypesRadioButton.setToggleGroup(selectProductfiltering);
-		allProductsRadioButton.setToggleGroup(selectProductfiltering);
+		sortDescendingRadioButton.setToggleGroup(selectProductfiltering);
+		sortAscendingRadioButton.setToggleGroup(selectProductfiltering);
 		
 		selectTableTypePane.getChildren().addAll(purchaseRadioButton, productsRadioButton, groupingComboBox);
 		switch (user) {
@@ -271,44 +270,6 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
    		return FXCollections.observableArrayList(temp);
    	}
 	
-	private DataTypeGenericForTable getDataForTable2() {
-		List<String> cols = new ArrayList<>();
-		cols.add("col1");
-		cols.add("col2");
-		cols.add("col3");
-		List<Object> row1 = new ArrayList<>();
-		List<Object> row2 = new ArrayList<>();
-		row1.add(4);
-		row1.add("gg");
-		row1.add(8.0);
-		row2.add(5);
-		row2.add("ff");
-		row2.add(9.0);
-		List<List<Object>> list = new ArrayList<>();
-		list.add(row1);
-		list.add(row2);
-		return new DataTypeGenericForTable(cols, list);
-	}
-
-	private DataTypeGenericForTable getDataForTable() {
-		List<String> cols = new ArrayList<>();
-		cols.add("col1");
-		cols.add("col2");
-		cols.add("col3");
-		List<Object> row1 = new ArrayList<>();
-		List<Object> row2 = new ArrayList<>();
-		row1.add(4);
-		row1.add("dd");
-		row1.add(8.0);
-		row2.add(5);
-		row2.add("ff");
-		row2.add(9.0);
-		List<List<Object>> list = new ArrayList<>();
-		list.add(row1);
-		list.add(row2);
-		return new DataTypeGenericForTable(cols, list);
-	}
-
 	private void setHeader() {
 	   	// Add Header
 	       headerLabel = new Label("View " + WindowType.PURCHASE_HISTORY.getText());
@@ -339,13 +300,14 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 		return groupingComboBox.getValue();
 	}
 	
-	private String getSelectedGroupAggregation() {
+	private String getSelectedGroupAggregation() throws Exception {
 		if (mineCheckBox.isSelected())
 			return mineCheckBox.getText();
 		else if (workersCheckBox.isSelected())
 			return workersCheckBox.getText();
-		else
+		else if (customersCheckBox.isSelected())
 			return customersCheckBox.getText();
+		else throw new Exception("No checkbox selected");
 	}
 	
 	private LocalDate getSelectedFromDate() {
@@ -358,6 +320,15 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 	
 	private String getSelectedProductType() {
 		return productTypeComboBox.getValue();
+	}
+	
+	private String getSelectedSortingType() {
+		if (selectTableTypePane.getChildren().contains(sortAscendingRadioButton)) {
+			if (sortAscendingRadioButton.isSelected())
+				return "asc";
+			return "desc";
+		}
+		return null;
 	}
 
 }
