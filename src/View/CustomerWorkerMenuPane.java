@@ -9,7 +9,6 @@ public class CustomerWorkerMenuPane extends MenuPane {
 	private Button homePage = new Button(WindowType.HOMEPAGE.getText());
 	private Button purchasesHistory = new Button(WindowType.PURCHASE_HISTORY.getText());
 	private Button products = new Button(WindowType.PRODUCTS.getText());
-	private Button cart = new Button(WindowType.CART.text);
 	private Button disconnect = new Button("Disconnect");
 	
 	public CustomerWorkerMenuPane() {
@@ -42,15 +41,6 @@ public class CustomerWorkerMenuPane extends MenuPane {
 			}
 		});
 		
-		cart.setOnAction(new EventHandler<ActionEvent>() {
-			
-			@Override
-			public void handle(ActionEvent event) {
-				DataPane.getInstance().changeView(WindowType.CART);
-				
-			}
-		});
-		
 		disconnect.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
@@ -65,7 +55,5 @@ public class CustomerWorkerMenuPane extends MenuPane {
 		super.addButtons(disconnect);
 		super.addButtons(purchasesHistory);
 		super.addButtons(products);
-		super.addButtons(cart);
-//		super.setButtonOnPane();
 	}
 }
