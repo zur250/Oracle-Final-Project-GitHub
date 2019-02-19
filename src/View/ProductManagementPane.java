@@ -20,7 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class ProductManagementPane extends Application implements ViewInterface {
+public class ProductManagementPane extends GridPane implements ViewInterface {
 
 	private Stage window;
 	private DataTypeGenericForTable data;
@@ -54,7 +54,6 @@ public class ProductManagementPane extends Application implements ViewInterface 
 	private Button updateProductAmountButton = new Button("Update");
 	private Button deleteProductButton = new Button("Delete");
 	
-	private GridPane mainPane = new GridPane();
 	private HBox addNewProductPane = new HBox(8.0);
 	private HBox updateProductPricePane = new HBox(8.0);
 	private HBox updateProductPricesPane = new HBox(8.0);
@@ -62,9 +61,26 @@ public class ProductManagementPane extends Application implements ViewInterface 
 	private HBox deleteProductPane = new HBox(8.0);
 	private GenericTablePane tablePane = null;
 
-
 	
-	public static void main(String[] args) {
+	
+	public ProductManagementPane() {
+		super();
+		
+        setPadding(new Insets(20, 20, 20, 20));
+        setHgap(10);
+        setVgap(10);
+        
+        setHeader();//create the header of the pane
+        createAddNewProductPane();
+        createUpdateProductPricePane();
+        createUpdateProductPricesPane();
+        createUpdateProductAmountPane();
+        createDeleteProductPane();
+        createUpdateTablePane();
+
+	}
+
+	/*public static void main(String[] args) {
         launch(args);
     }
 	
@@ -73,9 +89,9 @@ public class ProductManagementPane extends Application implements ViewInterface 
         window = primaryStage;
         window.setTitle(WindowType.MANAGE_PRODUCTS.getText());
         
-        mainPane.setPadding(new Insets(20, 20, 20, 20));
-        mainPane.setHgap(10);
-        mainPane.setVgap(10);
+        setPadding(new Insets(20, 20, 20, 20));
+        setHgap(10);
+        setVgap(10);
         
         setHeader();//create the header of the pane
         createAddNewProductPane();
@@ -90,7 +106,7 @@ public class ProductManagementPane extends Application implements ViewInterface 
         window.setScene(scene);
         window.show();
 	}
-
+*/
 	private void createAddNewProductPane() {
 		addNewProductButton.setOnAction(new EventHandler<ActionEvent>() {
 			
@@ -110,7 +126,7 @@ public class ProductManagementPane extends Application implements ViewInterface 
 		addNewProductPane.getChildren().addAll(newProductNameLabel, newProductNameText, newProductTypeLabel, newProductTypeComboBox,
 				newProductPriceLabel, newProductPriceText, newProductAmountLabel, newProductAmountText, addNewProductButton);
 		
-		mainPane.add(addNewProductPane, 0, 1, 9, 1);
+		add(addNewProductPane, 0, 1, 9, 1);
 		GridPane.setHalignment(addNewProductPane, HPos.CENTER);
 		GridPane.setValignment(addNewProductPane, VPos.TOP);
 		GridPane.setMargin(addNewProductPane, new Insets(10,0,0,0));
@@ -125,11 +141,11 @@ public class ProductManagementPane extends Application implements ViewInterface 
    	}
 	
 	private void createUpdateTablePane() {
-		if (mainPane.getChildren().contains(tablePane))
-			mainPane.getChildren().remove(tablePane);
+		if (getChildren().contains(tablePane))
+			getChildren().remove(tablePane);
 		data = ControllerInstance.getInstance().getCont().get_all_produces();
 		tablePane = new GenericTablePane(data);
-		mainPane.add(tablePane, 0, 6, 16, 1);
+		add(tablePane, 0, 6, 16, 1);
 		GridPane.setHalignment(tablePane, HPos.CENTER);
 		GridPane.setValignment(tablePane, VPos.TOP);
 		GridPane.setMargin(tablePane, new Insets(10,0,0,0));
@@ -147,7 +163,7 @@ public class ProductManagementPane extends Application implements ViewInterface 
 		
 		deleteProductPane.setPadding(new Insets(0, 5, 0, 5));
 		deleteProductPane.getChildren().addAll(deleteProductLabel, deleteProductText, deleteProductButton);
-		mainPane.add(deleteProductPane, 0, 5, 3, 1);
+		add(deleteProductPane, 0, 5, 3, 1);
 		GridPane.setHalignment(deleteProductPane, HPos.CENTER);
 		GridPane.setValignment(deleteProductPane, VPos.TOP);
 		GridPane.setMargin(deleteProductPane, new Insets(10,0,0,0));
@@ -166,7 +182,7 @@ public class ProductManagementPane extends Application implements ViewInterface 
 		
 		updateProductPricesPane.setPadding(new Insets(0, 5, 0, 5));
 		updateProductPricesPane.getChildren().addAll(updatePricesLabel, updatePricesText, updateProductPricesButton);
-		mainPane.add(updateProductPricesPane, 0, 3, 3, 1);
+		add(updateProductPricesPane, 0, 3, 3, 1);
 		GridPane.setHalignment(updateProductPricesPane, HPos.CENTER);
 		GridPane.setValignment(updateProductPricesPane, VPos.TOP);
 		GridPane.setMargin(updateProductPricesPane, new Insets(10,0,0,0));
@@ -184,7 +200,7 @@ public class ProductManagementPane extends Application implements ViewInterface 
 		
 		updateProductAmountPane.setPadding(new Insets(0, 5, 0, 5));
 		updateProductAmountPane.getChildren().addAll(updateProductAmountLabel, updateProductAmountText, addedAmuntLabel, addedAmuntText, updateProductAmountButton);
-		mainPane.add(updateProductAmountPane, 0, 4, 5, 1);
+		add(updateProductAmountPane, 0, 4, 5, 1);
 		GridPane.setHalignment(updateProductAmountPane, HPos.CENTER);
 		GridPane.setValignment(updateProductAmountPane, VPos.TOP);
 		GridPane.setMargin(updateProductAmountPane, new Insets(10,0,0,0));	
@@ -202,7 +218,7 @@ public class ProductManagementPane extends Application implements ViewInterface 
 		
 		updateProductPricePane.setPadding(new Insets(0, 5, 0, 5));
 		updateProductPricePane.getChildren().addAll(updateProductPriceLabel, updateProductPriceText, newPriceLabel, newPriceText, updateProductPriceButton);
-		mainPane.add(updateProductPricePane, 0, 2, 5, 1);
+		add(updateProductPricePane, 0, 2, 5, 1);
 		GridPane.setHalignment(updateProductPricePane, HPos.CENTER);
 		GridPane.setValignment(updateProductPricePane, VPos.TOP);
 		GridPane.setMargin(updateProductPricePane, new Insets(10,0,0,0));
@@ -214,7 +230,7 @@ public class ProductManagementPane extends Application implements ViewInterface 
        headerLabel = new Label(WindowType.MANAGE_PRODUCTS.getText());
        headerLabel.setFont(ViewEffects.getHeadersFont());	       
        headerLabel.setEffect(ViewEffects.getShadowEffect(5, 5));
-       mainPane.add(headerLabel, 0, 0, 2, 1);
+       add(headerLabel, 0, 0, 2, 1);
        GridPane.setHalignment(headerLabel, HPos.CENTER);
        GridPane.setValignment(headerLabel, VPos.TOP);
        GridPane.setMargin(headerLabel, new Insets(10, 0,0,0));

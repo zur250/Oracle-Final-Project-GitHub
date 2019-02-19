@@ -19,12 +19,11 @@ public class DataPane extends StackPane implements MainViewInterface {
   
 	private CartView cart;
 	private HomepageView profile;
-	//private EditRolesPane editRoles;
+	private ProductManagementPane manageProducts;
 	private DiscountView discount;
-	//private AddProductPane addProduct;
 	private ViewPurchaseHistoryPane historyPurchases;
-	//private ViewProductsPane products;
 	private UsersView users;
+	private PurchasePane purchase;
 	
 	private ViewInterface currentPane;
 	
@@ -56,20 +55,19 @@ public class DataPane extends StackPane implements MainViewInterface {
 	}
 	
 	private void generateUserWindows() {
-		//cart = new CartPane(userRole);
 		profile = new HomepageView();
 		discount = new DiscountView();
-		//addProduct = new AddProductPane();
-		//historyPurchases = new ViewPurchaseHistoryPane(userRole);
-		//products = new ViewProductsPane(userRole);
+		historyPurchases = new ViewPurchaseHistoryPane();
+		manageProducts = new ProductManagementPane();
 		users = new UsersView();
-		//views.put(WindowType.CART, cart);
+		purchase = new PurchasePane();
+		
 		views.put(WindowType.HOMEPAGE, profile);
 		views.put(WindowType.DISCOUNT, discount);
-		//views.put(WindowType.ADD_PRODUCT, addProduct);
 		views.put(WindowType.PURCHASE_HISTORY, historyPurchases);
-		//views.put(WindowType.PRODUCTS, products);
 		views.put(WindowType.USERS, users);
+		views.put(WindowType.MANAGE_PRODUCTS, manageProducts);
+		views.put(WindowType.PRODUCTS, purchase);
 	}
 	
 	

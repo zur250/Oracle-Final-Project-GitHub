@@ -6,7 +6,7 @@ import javafx.scene.control.Button;
 
 public class AdminMenuPane extends CustomerWorkerMenuPane {
 
-	private Button addNewProduct = new Button(WindowType.ADD_PRODUCT.getText());
+	private Button addNewProduct = new Button(WindowType.MANAGE_PRODUCTS.getText());
 	private Button discounts = new Button(WindowType.DISCOUNT.getText());
 	private Button users = new Button(WindowType.USERS.getText());
 	
@@ -35,7 +35,7 @@ public class AdminMenuPane extends CustomerWorkerMenuPane {
 			
 			@Override
 			public void handle(ActionEvent event) {
-				DataPane.getInstance().changeView(WindowType.ADD_PRODUCT);
+				DataPane.getInstance().changeView(WindowType.MANAGE_PRODUCTS);
 				
 			}
 		});

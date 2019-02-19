@@ -26,7 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class ViewPurchaseHistoryPane extends Application implements ViewInterface {
+public class ViewPurchaseHistoryPane extends GridPane implements ViewInterface {
 
 	private Stage window;
 		
@@ -56,9 +56,6 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 	
 	private Button filterButton = new Button("Filter");
 	
-	
-	private GridPane mainPane = new GridPane();
-	
 	private GenericTablePane tablePane;
 	
 	private HBox filtersPane = new HBox(2.0);
@@ -67,7 +64,64 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 	private Pane typeFilterPane = new Pane();
 	
 	
-	public static void main(String[] args) {
+	
+	public ViewPurchaseHistoryPane() {
+		super(); 
+        setHeader();//create the header of the pane
+        
+        createSelectTableTypePane();
+        createDateFilterPane();
+        createTypeFilterPane();
+        filterButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				try {
+					data = ControllerInstance.getInstance().getCont().viewPastPurchases
+					("apachi", getSelectedFocus(), getSetlectedTimeAggregation(), getSelectedGroupAggregation(),
+							getSelectedFromDate(), getSelectedUntilDate(), getSelectedProductType(), getSelectedSortingType());
+				getChildren().remove(tablePane);
+				tablePane = new GenericTablePane(data);
+				add(tablePane, 0, 3, 4, 1);
+		        GridPane.setHalignment(tablePane, HPos.CENTER);
+		        GridPane.setValignment(tablePane, VPos.TOP);
+		        GridPane.setMargin(tablePane, new Insets(10, 0,0,0));
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+			}
+		});
+        filtersPane = new HBox(8.0, dateFilterPane, typeFilterPane, filterButton);//create the
+        //table filter pane
+             
+        tablePane = new GenericTablePane(null);//no values have been inserted yet from DB
+
+        setPadding(new Insets(20, 20, 20, 20));
+        setHgap(10);
+        setVgap(10);
+        
+        add(headerLabel, 0, 0, 2, 1);
+        GridPane.setHalignment(headerLabel, HPos.CENTER);
+        GridPane.setValignment(headerLabel, VPos.TOP);
+        GridPane.setMargin(headerLabel, new Insets(10, 0,0,0));
+        
+        add(selectTableTypePane, 0, 1, 5, 1);
+        GridPane.setHalignment(selectTableTypePane, HPos.CENTER);
+        GridPane.setValignment(selectTableTypePane, VPos.TOP);
+        GridPane.setMargin(selectTableTypePane, new Insets(10, 0,0,0));
+        
+        add(filtersPane, 0, 2, 4, 1);
+        GridPane.setHalignment(filtersPane, HPos.CENTER);
+        GridPane.setValignment(filtersPane, VPos.TOP);
+        GridPane.setMargin(filtersPane, new Insets(10, 0,0,0));
+        
+        add(tablePane, 0, 3, 4, 1);
+        GridPane.setHalignment(tablePane, HPos.CENTER);
+        GridPane.setValignment(tablePane, VPos.TOP);
+        GridPane.setMargin(tablePane, new Insets(10, 0,0,0));
+	}
+
+	/*public static void main(String[] args) {
         launch(args);
     }
 	
@@ -89,9 +143,9 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
 					data = ControllerInstance.getInstance().getCont().viewPastPurchases
 					("apachi", getSelectedFocus(), getSetlectedTimeAggregation(), getSelectedGroupAggregation(),
 							getSelectedFromDate(), getSelectedUntilDate(), getSelectedProductType(), getSelectedSortingType());
-				mainPane.getChildren().remove(tablePane);
+				getChildren().remove(tablePane);
 				tablePane = new GenericTablePane(data);
-				mainPane.add(tablePane, 0, 3, 4, 1);
+				add(tablePane, 0, 3, 4, 1);
 		        GridPane.setHalignment(tablePane, HPos.CENTER);
 		        GridPane.setValignment(tablePane, VPos.TOP);
 		        GridPane.setMargin(tablePane, new Insets(10, 0,0,0));
@@ -105,26 +159,26 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
              
         tablePane = new GenericTablePane(null);//no values have been inserted yet from DB
 
-        mainPane.setPadding(new Insets(20, 20, 20, 20));
-        mainPane.setHgap(10);
-        mainPane.setVgap(10);
+        setPadding(new Insets(20, 20, 20, 20));
+        setHgap(10);
+        setVgap(10);
         
-        mainPane.add(headerLabel, 0, 0, 2, 1);
+        add(headerLabel, 0, 0, 2, 1);
         GridPane.setHalignment(headerLabel, HPos.CENTER);
         GridPane.setValignment(headerLabel, VPos.TOP);
         GridPane.setMargin(headerLabel, new Insets(10, 0,0,0));
         
-        mainPane.add(selectTableTypePane, 0, 1, 5, 1);
+        add(selectTableTypePane, 0, 1, 5, 1);
         GridPane.setHalignment(selectTableTypePane, HPos.CENTER);
         GridPane.setValignment(selectTableTypePane, VPos.TOP);
         GridPane.setMargin(selectTableTypePane, new Insets(10, 0,0,0));
         
-        mainPane.add(filtersPane, 0, 2, 4, 1);
+        add(filtersPane, 0, 2, 4, 1);
         GridPane.setHalignment(filtersPane, HPos.CENTER);
         GridPane.setValignment(filtersPane, VPos.TOP);
         GridPane.setMargin(filtersPane, new Insets(10, 0,0,0));
         
-        mainPane.add(tablePane, 0, 3, 4, 1);
+        add(tablePane, 0, 3, 4, 1);
         GridPane.setHalignment(tablePane, HPos.CENTER);
         GridPane.setValignment(tablePane, VPos.TOP);
         GridPane.setMargin(tablePane, new Insets(10, 0,0,0));
@@ -133,7 +187,7 @@ public class ViewPurchaseHistoryPane extends Application implements ViewInterfac
         window.setScene(scene);
         window.show();
     }
-
+*/
 	private void createTypeFilterPane() {
    		ObservableList<String> types = getProductTypes();
    		productTypeComboBox.getItems().addAll(types);

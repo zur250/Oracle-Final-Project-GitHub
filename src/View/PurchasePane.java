@@ -16,7 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class PurchasePane extends Application {
+public class PurchasePane extends GridPane implements ViewInterface {
 
 	private Stage window;
 	private DataTypeGenericForTable data;
@@ -39,50 +39,68 @@ public class PurchasePane extends Application {
 	private TextField addToCartProductAmountText = new TextField();
 	private TextField removeFromCartProductIDText = new TextField();
 	
-	private GridPane mainPane = new GridPane();
 	private HBox tableChoicePane = new HBox(8.0);
 	private HBox addToCartPane = new HBox(8.0);
 	private HBox removeFromCartPane = new HBox(8.0);
 	private HBox purchasePane = new HBox(8.0);
 	private GenericTablePane tablePane = null;
 	
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-        window = primaryStage;
-        window.setTitle(WindowType.PRODUCTS.getText());
+	
+	
+	public PurchasePane() {
+		super();
         
-        mainPane.setPadding(new Insets(20, 20, 20, 20));
-        mainPane.setHgap(10);
-        mainPane.setVgap(10);
+        setPadding(new Insets(20, 20, 20, 20));
+        setHgap(10);
+        setVgap(10);
         
         setHeader();//create the header of the pane
         createTableChoicePane();
         createRemoveFromCartPane();
-        mainPane.getChildren().remove(removeFromCartPane);
+        getChildren().remove(removeFromCartPane);
         createAddToCartPane();
         createProductsTablePane();
         createPurchasePane();
-        mainPane.getChildren().remove(purchasePane);
+        getChildren().remove(purchasePane);
+	}
+
+	/*@Override
+	public void start(Stage primaryStage) throws Exception {
+        window = primaryStage;
+        window.setTitle(WindowType.PRODUCTS.getText());
+        
+        setPadding(new Insets(20, 20, 20, 20));
+        setHgap(10);
+        setVgap(10);
+        
+        setHeader();//create the header of the pane
+        createTableChoicePane();
+        createRemoveFromCartPane();
+        getChildren().remove(removeFromCartPane);
+        createAddToCartPane();
+        createProductsTablePane();
+        createPurchasePane();
+        getChildren().remove(purchasePane);
         
         Scene scene = new Scene(mainPane,1200,800);
         window.setScene(scene);
         window.show();
 
 	}
-
+*/
 	private void setHeader() {
        headerLabel = new Label(WindowType.PRODUCTS.getText());
        headerLabel.setFont(ViewEffects.getHeadersFont());	       
        headerLabel.setEffect(ViewEffects.getShadowEffect(5, 5));
-       mainPane.add(headerLabel, 0, 0, 2, 1);
+       add(headerLabel, 0, 0, 2, 1);
        GridPane.setHalignment(headerLabel, HPos.CENTER);
        GridPane.setValignment(headerLabel, VPos.TOP);
        GridPane.setMargin(headerLabel, new Insets(10, 0,0,0));		
 	}
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
         launch(args);
-    }
+    }*/
 	
 	private void createTableChoicePane() {
 		ToggleGroup tableChoiceGroup = new ToggleGroup();
@@ -93,11 +111,11 @@ public class PurchasePane extends Application {
 		cartButton.setOnAction(e -> {
 			if (cartButton.isSelected()){
 				System.out.println("Cart Button Selected");
-				if (mainPane.getChildren().contains(addToCartPane))
-					mainPane.getChildren().remove(addToCartPane);
-				mainPane.getChildren().add(removeFromCartPane);
+				if (getChildren().contains(addToCartPane))
+					getChildren().remove(addToCartPane);
+				getChildren().add(removeFromCartPane);
 				createCartTablePane();
-				mainPane.getChildren().add(purchasePane);
+				getChildren().add(purchasePane);
 				setPaymentLeft();
 			}
 		});
@@ -105,16 +123,16 @@ public class PurchasePane extends Application {
 		productsButton.setOnAction(e -> {
 			if (productsButton.isSelected()) {
 				System.out.println("Products Button Selected");
-				if (mainPane.getChildren().contains(removeFromCartPane)) {
-					mainPane.getChildren().remove(removeFromCartPane);
-					mainPane.getChildren().remove(purchasePane);
+				if (getChildren().contains(removeFromCartPane)) {
+					getChildren().remove(removeFromCartPane);
+					getChildren().remove(purchasePane);
 				}
-				mainPane.getChildren().add(addToCartPane);
+				getChildren().add(addToCartPane);
 				createProductsTablePane();
 			}
 		});
 		tableChoicePane.getChildren().addAll(cartButton, productsButton);
-		mainPane.add(tableChoicePane, 0, 1, 2, 1);
+		add(tableChoicePane, 0, 1, 2, 1);
 		GridPane.setHalignment(tableChoicePane, HPos.CENTER);
 		GridPane.setValignment(tableChoicePane, VPos.TOP);
 		GridPane.setMargin(tableChoicePane, new Insets(10,0,0,0));			
@@ -130,7 +148,7 @@ public class PurchasePane extends Application {
 			}
 		});
 		addToCartPane.getChildren().addAll(addToCartProductIDLabel, addToCartProductIDText, addToCartProductAmountLabel, addToCartProductAmountText, addToCartButton);
-		mainPane.add(addToCartPane, 0, 2, 5, 1);
+		add(addToCartPane, 0, 2, 5, 1);
 		GridPane.setHalignment(addToCartPane, HPos.CENTER);
 		GridPane.setValignment(addToCartPane, VPos.TOP);
 		GridPane.setMargin(addToCartPane, new Insets(10,0,0,0));
@@ -143,14 +161,14 @@ public class PurchasePane extends Application {
 			public void handle(ActionEvent arg0) {
 				ControllerInstance.getInstance().getCont().removeProductFromCart(Integer.parseInt(removeFromCartProductIDText.getText()));
 				System.out.println("Product removed");
-				mainPane.getChildren().remove(tablePane);
+				getChildren().remove(tablePane);
 				createCartTablePane();
 				setPaymentLeft();
 			}
 		});
 		
 		removeFromCartPane.getChildren().addAll(removeFromCartProductIDLabel, removeFromCartProductIDText, removeFromCartButton);
-		mainPane.add(removeFromCartPane, 0, 2, 3, 1);
+		add(removeFromCartPane, 0, 2, 3, 1);
 		GridPane.setHalignment(removeFromCartPane, HPos.CENTER);
 		GridPane.setValignment(removeFromCartPane, VPos.TOP);
 		GridPane.setMargin(removeFromCartPane, new Insets(10,0,0,0));
@@ -158,22 +176,22 @@ public class PurchasePane extends Application {
 	}
 	
 	private void createCartTablePane() {
-		if (mainPane.getChildren().contains(tablePane))
-			mainPane.getChildren().remove(tablePane);
+		if (getChildren().contains(tablePane))
+			getChildren().remove(tablePane);
 		data = ControllerInstance.getInstance().getCont().getCartDetails();
 		tablePane = new GenericTablePane(data);
-		mainPane.add(tablePane, 0, 3, 5, 1);
+		add(tablePane, 0, 3, 5, 1);
 		GridPane.setHalignment(tablePane, HPos.CENTER);
 		GridPane.setValignment(tablePane, VPos.TOP);
 		GridPane.setMargin(tablePane, new Insets(10,0,0,0));		
 	}
 	
 	private void createProductsTablePane() {
-		if (mainPane.getChildren().contains(tablePane))
-			mainPane.getChildren().remove(tablePane);
+		if (getChildren().contains(tablePane))
+			getChildren().remove(tablePane);
 		data = ControllerInstance.getInstance().getCont().get_all_produces();
 		tablePane = new GenericTablePane(data);
-		mainPane.add(tablePane, 0, 3, 5, 1);
+		add(tablePane, 0, 3, 5, 1);
 		GridPane.setHalignment(tablePane, HPos.CENTER);
 		GridPane.setValignment(tablePane, VPos.TOP);
 		GridPane.setMargin(tablePane, new Insets(10,0,0,0));		
@@ -185,14 +203,14 @@ public class PurchasePane extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				ControllerInstance.getInstance().getCont().purchase();
-				mainPane.getChildren().remove(tablePane);
+				getChildren().remove(tablePane);
 				createCartTablePane();
 				setPaymentLeft();
 			}
 		});
 		setPaymentLeft();
 		purchasePane.getChildren().addAll(paymentLeftLabel, thePaymentLabel, purchaseCartButton);
-		mainPane.add(purchasePane, 0, 4, 3, 1);
+		add(purchasePane, 0, 4, 3, 1);
 		GridPane.setHalignment(purchasePane, HPos.CENTER);
 		GridPane.setValignment(purchasePane, VPos.TOP);
 		GridPane.setMargin(purchasePane, new Insets(10,0,0,0));			
@@ -200,6 +218,18 @@ public class PurchasePane extends Application {
 	
 	private void setPaymentLeft() {
 		thePaymentLabel.setText(ControllerInstance.getInstance().getCont().getPaymentLeft()+"");
+	}
+
+	@Override
+	public void updateData(DataType data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clearData() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
