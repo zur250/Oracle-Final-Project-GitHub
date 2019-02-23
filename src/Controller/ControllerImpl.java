@@ -52,14 +52,17 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 				case "Admin": dbModel.dbConnect(dbAdmin, dbPass);
 								curView.setUser(UserType.ADMIN);
 								curView.changeView(WindowType.HOMEPAGE);
+								createNewCart();
 								break;
-				case "User": dbModel.dbConnect(dbCustomer, dbPass);
+				case "Customer": dbModel.dbConnect(dbCustomer, dbPass);
 								curView.setUser(UserType.CUSTOMER);
 								curView.changeView(WindowType.HOMEPAGE);
+								createNewCart();
 								break;
-				case "Employee": dbModel.dbConnect(dbManager, dbPass);
+				case "Worker": dbModel.dbConnect(dbManager, dbPass);
 								curView.setUser(UserType.WORKER);
 								curView.changeView(WindowType.HOMEPAGE);
+								createNewCart();
 								break;	
 				}
 			}
@@ -82,10 +85,11 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void disconnect() {//shouldn't this function know who is connected?
+	public void disconnect() {
 		if(curUser != null) {
 			curUser = null;
 			try {
+				deleteCart();
 				dbModel.dbConnect(dbLogin, dbPass);
 				curView.setUser(UserType.ANONMOUS);
 			} catch (Exception e) {
@@ -102,7 +106,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	/*This should be initiated when a login occurs*/
 	@Override
 	public void createNewCart() {
-		this.cartID=dbModel.create_new_cart("apachi");
+		this.cartID=dbModel.create_new_cart(curUser.getUserName());
 	}
 	
 	@Override
@@ -116,19 +120,15 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void addProductToCart(int productID, int amount) {
-		try {
-			dbModel.add_product_to_cart(22, productID, amount);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void addProductToCart(int productID, int amount) throws SQLException {
+		dbModel.add_product_to_cart(this.cartID, productID, amount);
+
 	}
 
 	@Override
 	public void removeProductFromCart(int productID) {//same question as above
 		try {
-			dbModel.remove_product_from_cart(22, productID);
+			dbModel.remove_product_from_cart(this.cartID, productID);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -136,13 +136,10 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 	
 	@Override
-	public void purchase() {
-		try {
-			dbModel.purchase(22);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void purchase() throws SQLException {
+			dbModel.purchase(this.cartID);
+			deleteCart();
+			createNewCart();	
 	}
 
 	@Override
@@ -173,13 +170,9 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	
 
 	@Override
-	public void updateAllPrices(double percent) {
-		try {
-			dbModel.update_prices(percent);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void updateAllPrices(double percent) throws SQLException {
+		dbModel.update_prices(percent);
+
 	}
 
 	@Override
@@ -203,13 +196,8 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void addProductToStore(String productName, String type, double price, int ammountInStock) {
-		try {
+	public void addProductToStore(String productName, String type, double price, int ammountInStock) throws SQLException {
 			dbModel.add_product(productName, type, price, ammountInStock);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -351,11 +339,11 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	
 	@Override
 	public DataTypeGenericForTable getCartDetails() {
-		return dbModel.getCartDetails(22);
+		return dbModel.getCartDetails(this.cartID);
 	}
 	
 	@Override
 	public double getPaymentLeft() {
-		return dbModel.get_payment_left(22);
+		return dbModel.get_payment_left(this.cartID);
 	}
 }

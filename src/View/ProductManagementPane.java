@@ -1,5 +1,6 @@
 package View;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
@@ -11,6 +12,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -75,7 +77,7 @@ public class ProductManagementPane extends GridPane implements ViewInterface {
         createUpdateProductPricePane();
         createUpdateProductPricesPane();
         createUpdateProductAmountPane();
-        createDeleteProductPane();
+        //createDeleteProductPane();
         createUpdateTablePane();
 
 	}
@@ -112,9 +114,14 @@ public class ProductManagementPane extends GridPane implements ViewInterface {
 			
 			@Override
 			public void handle(ActionEvent event) {
-				ControllerInstance.getInstance().getCont().addProductToStore(newProductNameText.getText(), newProductTypeComboBox.getValue(),
-						Double.parseDouble(newProductPriceText.getText()), Integer.parseInt(newProductAmountText.getText()));
-				createUpdateTablePane();
+				try {
+					ControllerInstance.getInstance().getCont().addProductToStore(newProductNameText.getText(), newProductTypeComboBox.getValue(),
+							Double.parseDouble(newProductPriceText.getText()), Integer.parseInt(newProductAmountText.getText()));
+					createUpdateTablePane();
+				} catch (NumberFormatException | SQLException e) {
+					ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+				}
+				
 			}
 		});
 		
@@ -140,12 +147,12 @@ public class ProductManagementPane extends GridPane implements ViewInterface {
    		return FXCollections.observableArrayList(temp);
    	}
 	
-	private void createUpdateTablePane() {
+	public void createUpdateTablePane() {
 		if (getChildren().contains(tablePane))
 			getChildren().remove(tablePane);
 		data = ControllerInstance.getInstance().getCont().get_all_produces();
 		tablePane = new GenericTablePane(data);
-		add(tablePane, 0, 6, 16, 1);
+		add(tablePane, 0, 5, 16, 1);
 		GridPane.setHalignment(tablePane, HPos.CENTER);
 		GridPane.setValignment(tablePane, VPos.TOP);
 		GridPane.setMargin(tablePane, new Insets(10,0,0,0));
@@ -175,8 +182,13 @@ public class ProductManagementPane extends GridPane implements ViewInterface {
 			
 			@Override
 			public void handle(ActionEvent arg0) {
-				ControllerInstance.getInstance().getCont().updateAllPrices(Double.parseDouble(updatePricesText.getText()));
-				createUpdateTablePane();
+				try {
+					ControllerInstance.getInstance().getCont().updateAllPrices(Double.parseDouble(updatePricesText.getText()));
+					createUpdateTablePane();
+				} catch (NumberFormatException | SQLException e) {
+					ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+				}
+				
 			}
 		});
 		

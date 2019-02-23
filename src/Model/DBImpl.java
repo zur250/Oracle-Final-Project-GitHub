@@ -312,7 +312,7 @@ public class DBImpl implements DBInterface {
 			columns.add(columnNames[i]);
 		
 		try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_MANAGEMENT_PACKAGE.show_all_products(?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.MAKE_PURCHASE_PACKAGE.show_all_products(?); END;");			
 			stmt.registerOutParameter(1, OracleTypes.CURSOR);
 			stmt.execute();
 		    ResultSet rs = ((OracleCallableStatement)stmt).getCursor(1);
@@ -392,6 +392,9 @@ public class DBImpl implements DBInterface {
 		List<String> columns = new ArrayList<>();
 		CallableStatement stmt;
 		int columnFunction = function/10;
+		if (columnFunction>=10) {
+			columnFunction--;
+		}
 		final String[][] columnNames = {{"Cart number", "Number of Products", "Products value", "Running sum of value"},
 				{"Year", "Month", "Number of products", "Month value", "Running sum value"},
 				{"Year", "Number of products", "Year value", "Running sum year"},
@@ -417,8 +420,8 @@ public class DBImpl implements DBInterface {
 		switch (function) {
 		case 0:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_purc(?,?,?); END;");			
-			stmt.setString(1, "apachi");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc(?,?,?); END;");			
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
 			stmt.execute();
@@ -446,8 +449,8 @@ public class DBImpl implements DBInterface {
 			break;
 		case 1:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_purc_from(?,?,?,?); END;");			
-			stmt.setString(1, "apachi");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_from(?,?,?,?); END;");			
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
 			stmt.registerOutParameter(4, OracleTypes.CURSOR);
@@ -476,8 +479,8 @@ public class DBImpl implements DBInterface {
 			break;
 		case 2:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_purc_to(?,?,?,?); END;");			
-			stmt.setString(1, "apachi");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_to(?,?,?,?); END;");			
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(until));
 			stmt.registerOutParameter(4, OracleTypes.CURSOR);
@@ -505,8 +508,8 @@ public class DBImpl implements DBInterface {
 			break;
 		case 3:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_purc_from_to(?,?,?,?,?); END;");			
-			stmt.setString(1, "apachi");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_from_to(?,?,?,?,?); END;");			
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
 			stmt.setDate(4, Date.valueOf(until));
@@ -536,8 +539,8 @@ public class DBImpl implements DBInterface {
 			break;
 		case 10:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_purc_month(?,?,?); END;");			
-			stmt.setString(1, "apachi");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_month(?,?,?); END;");			
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
 			stmt.execute();
@@ -567,8 +570,8 @@ public class DBImpl implements DBInterface {
 			break;
 		case 11:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_purc_month_from(?,?,?,?); END;");			
-			stmt.setString(1, "apachi");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_month_from(?,?,?,?); END;");			
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
 			stmt.registerOutParameter(4, OracleTypes.CURSOR);
@@ -599,8 +602,8 @@ public class DBImpl implements DBInterface {
 			break;
 		case 12:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_purc_month_to(?,?,?,?); END;");			
-			stmt.setString(1, "apachi");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_month_to(?,?,?,?); END;");			
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(until));
 			stmt.registerOutParameter(4, OracleTypes.CURSOR);
@@ -631,8 +634,8 @@ public class DBImpl implements DBInterface {
 			break;
 		case 13:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_purc_month_from_to(?,?,?,?,?); END;");			
-			stmt.setString(1, "apachi");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_month_from_to(?,?,?,?,?); END;");			
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
 			stmt.setDate(4, Date.valueOf(until));
@@ -664,8 +667,8 @@ public class DBImpl implements DBInterface {
 			break;
 		case 20:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_purc_year(?,?,?); END;");			
-			stmt.setString(1, "apachi");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_year(?,?,?); END;");			
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
 			stmt.execute();
@@ -692,8 +695,8 @@ public class DBImpl implements DBInterface {
 			break;
 		case 21:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_purc_year_from(?,?,?,?); END;");			
-			stmt.setString(1, "apachi");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_year_from(?,?,?,?); END;");			
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
 			stmt.registerOutParameter(4, OracleTypes.CURSOR);
@@ -721,8 +724,8 @@ public class DBImpl implements DBInterface {
 			break;
 		case 22:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_purc_year_to(?,?,?,?); END;");			
-			stmt.setString(1, "apachi");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_year_to(?,?,?,?); END;");			
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(until));
 			stmt.registerOutParameter(4, OracleTypes.CURSOR);
@@ -750,8 +753,8 @@ public class DBImpl implements DBInterface {
 			break;
 		case 23:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_purc_year_to(?,?,?,?,?); END;");			
-			stmt.setString(1, "apachi");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_year_from_to(?,?,?,?,?); END;");			
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
 			stmt.setDate(4, Date.valueOf(until));
@@ -780,7 +783,7 @@ public class DBImpl implements DBInterface {
 			break;
 		case 30:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_purc(?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc(?,?); END;");
 			stmt.setString(1, productType);
 			stmt.registerOutParameter(2, OracleTypes.CURSOR);
 			stmt.execute();
@@ -810,7 +813,7 @@ public class DBImpl implements DBInterface {
 			break;
 		case 31:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_purc_from(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_from(?,?,?); END;");
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -841,7 +844,7 @@ public class DBImpl implements DBInterface {
 			break;
 		case 32:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_purc_to(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_to(?,?,?); END;");
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -872,7 +875,7 @@ public class DBImpl implements DBInterface {
 			break;
 		case 33:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_purc_from_to(?,?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_from_to(?,?,?,?); END;");
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setDate(3, Date.valueOf(until));
@@ -904,7 +907,7 @@ public class DBImpl implements DBInterface {
 			break;
 		case 40:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_purc_month(?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_month(?,?); END;");
 			stmt.setString(1, productType);
 			stmt.registerOutParameter(2, OracleTypes.CURSOR);
 			stmt.execute();
@@ -929,7 +932,7 @@ public class DBImpl implements DBInterface {
 			break;
 		case 41:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_purc_month_from(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_month_from(?,?,?); END;");
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -955,7 +958,7 @@ public class DBImpl implements DBInterface {
 			break;
 		case 42:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_purc_month_to(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_month_to(?,?,?); END;");
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -981,7 +984,7 @@ public class DBImpl implements DBInterface {
 			break;
 		case 43:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_purc_month_from_to(?,?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_month_from_to(?,?,?,?); END;");
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setDate(3, Date.valueOf(until));
@@ -1008,7 +1011,7 @@ public class DBImpl implements DBInterface {
 			break;
 		case 50:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_purc_year(?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_year(?,?); END;");
 			stmt.setString(1, productType);
 			stmt.registerOutParameter(2, OracleTypes.CURSOR);
 			stmt.execute();
@@ -1032,7 +1035,7 @@ public class DBImpl implements DBInterface {
 		case 51:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_purc_year_from(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_year_from(?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -1058,7 +1061,7 @@ public class DBImpl implements DBInterface {
 		case 52:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_purc_year_to(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_year_to(?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
@@ -1083,7 +1086,7 @@ public class DBImpl implements DBInterface {
 			break;
 		case 53:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_purc_year_from_to(?,?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_year_from_to(?,?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -1109,7 +1112,7 @@ public class DBImpl implements DBInterface {
 			break;
 		case 60:
 			try {
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_purc(?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc(?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.registerOutParameter(2, OracleTypes.CURSOR);
@@ -1133,15 +1136,14 @@ public class DBImpl implements DBInterface {
 				tableContent.add(temp);
 		      }
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 			
 			break;
 		case 61:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_purc_from(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_from(?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -1174,7 +1176,7 @@ public class DBImpl implements DBInterface {
 		case 62:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_purc_to(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_to(?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
@@ -1207,7 +1209,7 @@ public class DBImpl implements DBInterface {
 		case 63:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_purc_from_to(?,?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_from_to(?,?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -1241,7 +1243,7 @@ public class DBImpl implements DBInterface {
 		case 70:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_purc_month(?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_month(?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.registerOutParameter(2, OracleTypes.CURSOR);
@@ -1268,7 +1270,7 @@ public class DBImpl implements DBInterface {
 		case 71:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_purc_month_from(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_month_from(?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -1296,7 +1298,7 @@ public class DBImpl implements DBInterface {
 		case 72:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_purc_month_to(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_month_to(?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
@@ -1324,7 +1326,7 @@ public class DBImpl implements DBInterface {
 		case 73:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_purc_month_from_to(?,?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_month_from_to(?,?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -1353,7 +1355,7 @@ public class DBImpl implements DBInterface {
 		case 80:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_purc_year(?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_year(?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.registerOutParameter(2, OracleTypes.CURSOR);
@@ -1378,7 +1380,7 @@ public class DBImpl implements DBInterface {
 		case 81:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_purc_year_from(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_year_from(?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -1404,7 +1406,7 @@ public class DBImpl implements DBInterface {
 		case 82:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_purc_year_to(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_year_to(?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
@@ -1430,7 +1432,7 @@ public class DBImpl implements DBInterface {
 		case 83:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_purc_year_from_to(?,?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_year_from_to(?,?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -1457,9 +1459,9 @@ public class DBImpl implements DBInterface {
 		case 100:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_prod(?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod(?,?,?,?); END;");			
 
-			stmt.setString(1, "apachi");
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setString(3, sorting);
 			stmt.registerOutParameter(4, OracleTypes.CURSOR);
@@ -1489,9 +1491,9 @@ public class DBImpl implements DBInterface {
 		case 101:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_prod_from(?,?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_from(?,?,?,?,?); END;");			
 
-			stmt.setString(1, "apachi");
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
 			stmt.setString(4, sorting);
@@ -1522,9 +1524,9 @@ public class DBImpl implements DBInterface {
 		case 102:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_prod_to(?,?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_to(?,?,?,?,?); END;");			
 
-			stmt.setString(1, "apachi");
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(until));
 			stmt.setString(4, sorting);
@@ -1555,9 +1557,9 @@ public class DBImpl implements DBInterface {
 		case 103:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_prod_from_to(?,?,?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_from_to(?,?,?,?,?,?); END;");			
 
-			stmt.setString(1, "apachi");
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
 			stmt.setDate(4, Date.valueOf(until));
@@ -1589,9 +1591,9 @@ public class DBImpl implements DBInterface {
 		case 110:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_prod_month(?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_month(?,?,?,?); END;");			
 
-			stmt.setString(1, "apachi");
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setString(3, sorting);
 			stmt.registerOutParameter(4, OracleTypes.CURSOR);
@@ -1621,9 +1623,9 @@ public class DBImpl implements DBInterface {
 		case 111:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_prod_month_from(?,?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_month_from(?,?,?,?,?); END;");			
 
-			stmt.setString(1, "apachi");
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
 			stmt.setString(4, sorting);
@@ -1653,9 +1655,9 @@ public class DBImpl implements DBInterface {
 		case 112:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_prod_month_to(?,?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_month_to(?,?,?,?,?); END;");			
 
-			stmt.setString(1, "apachi");
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(until));
 			stmt.setString(4, sorting);
@@ -1686,9 +1688,9 @@ public class DBImpl implements DBInterface {
 		case 113:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_prod_month_from_to(?,?,?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_month_from_to(?,?,?,?,?,?); END;");			
 
-			stmt.setString(1, "apachi");
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
 			stmt.setDate(4, Date.valueOf(until));
@@ -1720,9 +1722,9 @@ public class DBImpl implements DBInterface {
 		case 120:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_prod_year(?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_year(?,?,?,?); END;");			
 
-			stmt.setString(1, "apachi");
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setString(3, sorting);
 			stmt.registerOutParameter(4, OracleTypes.CURSOR);
@@ -1750,9 +1752,9 @@ public class DBImpl implements DBInterface {
 		case 121:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_prod_year_from(?,?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_year_from(?,?,?,?,?); END;");			
 
-			stmt.setString(1, "apachi");
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
 			stmt.setString(4, sorting);
@@ -1781,9 +1783,9 @@ public class DBImpl implements DBInterface {
 		case 122:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_prod_year_to(?,?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_year_to(?,?,?,?,?); END;");			
 
-			stmt.setString(1, "apachi");
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(until));
 			stmt.setString(4, sorting);
@@ -1812,9 +1814,9 @@ public class DBImpl implements DBInterface {
 		case 123:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_my_prod_year_from_to(?,?,?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_year_from_to(?,?,?,?,?,?); END;");			
 
-			stmt.setString(1, "apachi");
+			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
 			stmt.setDate(4, Date.valueOf(until));
@@ -1844,7 +1846,7 @@ public class DBImpl implements DBInterface {
 		case 130:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_prod(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod(?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setString(2, sorting);
@@ -1879,12 +1881,12 @@ public class DBImpl implements DBInterface {
 		case 131:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_prod_from(?,?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_from(?,?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setString(3, sorting);
-			stmt.registerOutParameter(3, OracleTypes.CURSOR);
+			stmt.registerOutParameter(4, OracleTypes.CURSOR);
 			stmt.execute();
 		    ResultSet rs = ((OracleCallableStatement)stmt).getCursor(4);
 		    while (rs.next()) {
@@ -1915,7 +1917,7 @@ public class DBImpl implements DBInterface {
 		case 132:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_prod_to(?,?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_to(?,?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
@@ -1951,7 +1953,7 @@ public class DBImpl implements DBInterface {
 		case 133:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_prod_from_to(?,?,?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_from_to(?,?,?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -1988,7 +1990,7 @@ public class DBImpl implements DBInterface {
 		case 140:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_prod_month(?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_month(?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setString(2, sorting);
@@ -2023,7 +2025,7 @@ public class DBImpl implements DBInterface {
 		case 141:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_prod_month_from(?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_month_from(?,?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -2059,7 +2061,7 @@ public class DBImpl implements DBInterface {
 		case 142:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_prod_month_to(?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_month_to(?,?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
@@ -2095,7 +2097,7 @@ public class DBImpl implements DBInterface {
 		case 143:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_prod_month_from_to(?,?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_month_from_to(?,?,?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -2132,7 +2134,7 @@ public class DBImpl implements DBInterface {
 		case 150:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_prod_year(?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_year(?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setString(2, sorting);
@@ -2164,7 +2166,7 @@ public class DBImpl implements DBInterface {
 		case 151:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_prod_year_from(?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_year_from(?,?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -2197,7 +2199,7 @@ public class DBImpl implements DBInterface {
 		case 152:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_prod_year_to(?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_year_to(?,?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
@@ -2230,7 +2232,7 @@ public class DBImpl implements DBInterface {
 		case 153:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_workers_prod_year_from_to(?,?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_year_from_to(?,?,?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -2264,7 +2266,7 @@ public class DBImpl implements DBInterface {
 		case 160:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_prod(?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod(?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setString(2, sorting);
@@ -2299,7 +2301,7 @@ public class DBImpl implements DBInterface {
 		case 161:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_prod_from(?,?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_from(?,?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -2335,7 +2337,7 @@ public class DBImpl implements DBInterface {
 		case 162:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_prod_to(?,?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_to(?,?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
@@ -2371,7 +2373,7 @@ public class DBImpl implements DBInterface {
 		case 163:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_prod_from_to(?,?,?,?,?); END;");
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_from_to(?,?,?,?,?); END;");
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -2408,7 +2410,7 @@ public class DBImpl implements DBInterface {
 		case 170:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_prod_month(?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_month(?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setString(2, sorting);
@@ -2443,7 +2445,7 @@ public class DBImpl implements DBInterface {
 		case 171:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_prod_month_from(?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_month_from(?,?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -2479,7 +2481,7 @@ public class DBImpl implements DBInterface {
 		case 172:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_prod_month_to(?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_month_to(?,?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
@@ -2515,7 +2517,7 @@ public class DBImpl implements DBInterface {
 		case 173:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_prod_month_from_to(?,?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_month_from_to(?,?,?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -2552,7 +2554,7 @@ public class DBImpl implements DBInterface {
 		case 180:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_prod_year(?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_year(?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setString(2, sorting);
@@ -2584,7 +2586,7 @@ public class DBImpl implements DBInterface {
 		case 181:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_prod_year_from(?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_year_from(?,?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -2617,7 +2619,7 @@ public class DBImpl implements DBInterface {
 		case 182:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_prod_year_to(?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_year_to(?,?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
@@ -2650,7 +2652,7 @@ public class DBImpl implements DBInterface {
 		case 183:
 			try {
 
-			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_PACKAGE2.get_cust_prod_year_from_to(?,?,?,?,?); END;");			
+			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_year_from_to(?,?,?,?,?); END;");			
 
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -2700,11 +2702,11 @@ public class DBImpl implements DBInterface {
 			e1.printStackTrace();
 		}
 		try {
-			System.out.println(d.create_new_cart("apachi"));
+			//System.out.println(d.create_new_cart(username));
 			//d.change_discount("Admin", 95);
 			//System.out.println(d.get_users());
 			//System.out.println(d.get_cart_price(1));
-			//System.out.println(d.viewPastPurchases("apachi", null, null, "none", "asc", 160));
+			//System.out.println(d.viewPastPurchases(username, null, null, "none", "asc", 160));
 			//d.get_roles();
 			//System.out.println(d.get_user("guy"));
 			//d.get_users();			//d.viewPastPurchases(null, null, null, 0);

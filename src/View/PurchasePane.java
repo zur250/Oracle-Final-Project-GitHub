@@ -1,5 +1,7 @@
 package View;
 
+import java.sql.SQLException;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -7,6 +9,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -143,8 +146,12 @@ public class PurchasePane extends GridPane implements ViewInterface {
 			
 			@Override
 			public void handle(ActionEvent event) {
-				ControllerInstance.getInstance().getCont().addProductToCart(Integer.parseInt(addToCartProductIDText.getText()), Integer.parseInt(addToCartProductAmountText.getText()));
-				System.out.println("Product added");
+				try {
+					ControllerInstance.getInstance().getCont().addProductToCart(Integer.parseInt(addToCartProductIDText.getText()), Integer.parseInt(addToCartProductAmountText.getText()));
+					ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, DataPane.getInstance().getScene().getWindow(), "Added Successful!", "Product Added");
+				} catch (NumberFormatException | SQLException e) {
+					ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+				}
 			}
 		});
 		addToCartPane.getChildren().addAll(addToCartProductIDLabel, addToCartProductIDText, addToCartProductAmountLabel, addToCartProductAmountText, addToCartButton);
@@ -186,7 +193,7 @@ public class PurchasePane extends GridPane implements ViewInterface {
 		GridPane.setMargin(tablePane, new Insets(10,0,0,0));		
 	}
 	
-	private void createProductsTablePane() {
+	public void createProductsTablePane() {
 		if (getChildren().contains(tablePane))
 			getChildren().remove(tablePane);
 		data = ControllerInstance.getInstance().getCont().get_all_produces();
@@ -202,10 +209,15 @@ public class PurchasePane extends GridPane implements ViewInterface {
 			
 			@Override
 			public void handle(ActionEvent event) {
-				ControllerInstance.getInstance().getCont().purchase();
-				getChildren().remove(tablePane);
-				createCartTablePane();
-				setPaymentLeft();
+				try {
+					ControllerInstance.getInstance().getCont().purchase();
+					getChildren().remove(tablePane);
+					createCartTablePane();
+					setPaymentLeft();
+				} catch (SQLException e) {
+					ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+				}
+				
 			}
 		});
 		setPaymentLeft();

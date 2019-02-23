@@ -101,6 +101,18 @@ public class DataPane extends StackPane implements MainViewInterface {
 			UsersView UsersPane = (UsersView) this.currentPane;
 			UsersPane.refreshTable();
 		}
+		else if (type == WindowType.MANAGE_PRODUCTS) {
+			ProductManagementPane prPane = (ProductManagementPane) this.currentPane;
+			prPane.createUpdateTablePane();
+		}
+		else if (type == WindowType.PRODUCTS) {
+			PurchasePane prPane = (PurchasePane) this.currentPane;
+			prPane.createProductsTablePane();
+		}
+		else if (type == WindowType.PURCHASE_HISTORY) {
+			ViewPurchaseHistoryPane prPane = (ViewPurchaseHistoryPane) this.currentPane;
+			prPane.clearData();
+		}
 		this.getChildren().add((Node) currentPane);
 	}
 

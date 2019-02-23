@@ -78,7 +78,7 @@ public class ViewPurchaseHistoryPane extends GridPane implements ViewInterface {
 			public void handle(ActionEvent event) {
 				try {
 					data = ControllerInstance.getInstance().getCont().viewPastPurchases
-					("apachi", getSelectedFocus(), getSetlectedTimeAggregation(), getSelectedGroupAggregation(),
+					(ControllerInstance.getInstance().getCont().getCurUser().getUserName(), getSelectedFocus(), getSetlectedTimeAggregation(), getSelectedGroupAggregation(),
 							getSelectedFromDate(), getSelectedUntilDate(), getSelectedProductType(), getSelectedSortingType());
 				getChildren().remove(tablePane);
 				tablePane = new GenericTablePane(data);
@@ -300,19 +300,7 @@ public class ViewPurchaseHistoryPane extends GridPane implements ViewInterface {
 		sortAscendingRadioButton.setToggleGroup(selectProductfiltering);
 		
 		selectTableTypePane.getChildren().addAll(purchaseRadioButton, productsRadioButton, groupingComboBox);
-		switch (user) {
-		case ADMIN:
-			selectTableTypePane.getChildren().addAll(mineCheckBox, customersCheckBox, workersCheckBox);
-			break;
-		
-		case WORKER:
-			selectTableTypePane.getChildren().addAll(mineCheckBox, customersCheckBox);
-
-		default:
-			selectTableTypePane.getChildren().add(mineCheckBox);
-			break;
-		}
-		
+		selectTableTypePane.getChildren().addAll(mineCheckBox, customersCheckBox, workersCheckBox);
 	}
 	
 	private ObservableList<String> getGroupingTypes(){
@@ -340,7 +328,12 @@ public class ViewPurchaseHistoryPane extends GridPane implements ViewInterface {
 
 	@Override
 	public void clearData() {
-		// TODO Auto-generated method stub
+		getChildren().remove(tablePane);
+		tablePane = new GenericTablePane(null);
+		add(tablePane, 0, 3, 4, 1);
+        GridPane.setHalignment(tablePane, HPos.CENTER);
+        GridPane.setValignment(tablePane, VPos.TOP);
+        GridPane.setMargin(tablePane, new Insets(10, 0,0,0));
 	}
 	
 	private String getSelectedFocus() {
