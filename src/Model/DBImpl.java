@@ -101,7 +101,7 @@ public class DBImpl implements DBInterface {
 		stmt.execute();
 	    ResultSet rs = ((OracleCallableStatement)stmt).getCursor(2);
 	    while (rs.next()) {
-	        cur_User = new User(rs.getString("username"), rs.getString("pass"), rs.getInt("phone"), rs.getDate("joindate"), rs.getInt("roleid"), rs.getDouble("balance"));
+	        cur_User = new User(rs.getString("username"), rs.getString("pass"), String.valueOf(rs.getFloat("phone")), rs.getDate("joindate"), rs.getInt("roleid"), rs.getDouble("balance"));
 	      }
 		return cur_User;
 	}
@@ -130,7 +130,7 @@ public class DBImpl implements DBInterface {
 			stmt.execute();
 		    ResultSet rs = ((OracleCallableStatement)stmt).getCursor(1);
 		    while (rs.next()) {
-		        cur_User = new User(rs.getString(1), rs.getString(2), rs.getInt(5), rs.getDate(4), rs.getInt(6), rs.getDouble(3));
+		        cur_User = new User(rs.getString(1), rs.getString(2), String.valueOf(rs.getFloat(5)), rs.getDate(4), rs.getInt(6), rs.getDouble(3));
 		        users.add(cur_User);
 
 				System.out.println(cur_User.getUserName());

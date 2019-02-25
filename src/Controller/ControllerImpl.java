@@ -250,7 +250,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 			ArrayList<Model.User> dbUsers= dbModel.get_users();
 			ArrayList<View.User> users = new ArrayList<>();
 			for (Model.User dbUser : dbUsers) {
-				users.add(new View.User(dbUser.getUserName(), Integer.toString(dbUser.getPhoneNumber()), Integer.toString(dbUser.getRoleID()), dbUser.getBalance(), Calendar.getInstance().getTime().getYear()-dbUser.getHire_date().getYear(), dbUser.getHire_date()));
+				users.add(new View.User(dbUser.getUserName(), dbUser.getPhoneNumber(), Integer.toString(dbUser.getRoleID()), dbUser.getBalance(), Calendar.getInstance().getTime().getYear()-dbUser.getHire_date().getYear(), dbUser.getHire_date()));
 			}
 			return users;
 	}

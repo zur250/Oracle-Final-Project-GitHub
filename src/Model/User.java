@@ -5,7 +5,7 @@ import java.util.Date;
 public class User {
 	private String userName;
 	private String password;
-	private int phoneNumber;
+	private String phoneNumber;
 	private Date hire_date;
 	private int roleID;
 	private double balance;
@@ -23,10 +23,10 @@ public class User {
 		this.password = pass;
 	}
 	
-	public int getPhoneNumber() {
+	public String getPhoneNumber() {
 		return phoneNumber;
 	}
-	public void setPhoneNumber(int phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 	public Date getHire_date() {
@@ -50,7 +50,7 @@ public class User {
 	}
 
 
-	public User(String userName, String password, int phoneNumber, Date hire_date, int roleID, double balance) {
+	public User(String userName, String password, String phoneNumber, Date hire_date, int roleID, double balance) {
 		super();
 		this.userName = userName;
 		this.password = password;
