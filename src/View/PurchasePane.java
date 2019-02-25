@@ -119,7 +119,11 @@ public class PurchasePane extends GridPane implements ViewInterface {
 				getChildren().add(removeFromCartPane);
 				createCartTablePane();
 				getChildren().add(purchasePane);
-				setPaymentLeft();
+				try {
+					setPaymentLeft();
+				} catch (SQLException e1) {
+					ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e1.getMessage());
+				}
 			}
 		});
 		
@@ -166,11 +170,17 @@ public class PurchasePane extends GridPane implements ViewInterface {
 			
 			@Override
 			public void handle(ActionEvent arg0) {
-				ControllerInstance.getInstance().getCont().removeProductFromCart(Integer.parseInt(removeFromCartProductIDText.getText()));
-				System.out.println("Product removed");
-				getChildren().remove(tablePane);
-				createCartTablePane();
-				setPaymentLeft();
+					try {
+						ControllerInstance.getInstance().getCont().removeProductFromCart(Integer.parseInt(removeFromCartProductIDText.getText()));
+						System.out.println("Product removed");
+						getChildren().remove(tablePane);
+						createCartTablePane();
+						setPaymentLeft();
+					} catch (NumberFormatException | SQLException e) {
+						ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+					}
+					
+				
 			}
 		});
 		
@@ -185,26 +195,36 @@ public class PurchasePane extends GridPane implements ViewInterface {
 	private void createCartTablePane() {
 		if (getChildren().contains(tablePane))
 			getChildren().remove(tablePane);
-		data = ControllerInstance.getInstance().getCont().getCartDetails();
-		tablePane = new GenericTablePane(data);
-		add(tablePane, 0, 3, 5, 1);
-		GridPane.setHalignment(tablePane, HPos.CENTER);
-		GridPane.setValignment(tablePane, VPos.TOP);
-		GridPane.setMargin(tablePane, new Insets(10,0,0,0));		
+		try {
+			data = ControllerInstance.getInstance().getCont().getCartDetails();
+			tablePane = new GenericTablePane(data);
+			add(tablePane, 0, 3, 5, 1);
+			GridPane.setHalignment(tablePane, HPos.CENTER);
+			GridPane.setValignment(tablePane, VPos.TOP);
+			GridPane.setMargin(tablePane, new Insets(10,0,0,0));	
+		} catch (SQLException e) {
+			ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+		}
+			
 	}
 	
 	public void createProductsTablePane() {
 		if (getChildren().contains(tablePane))
 			getChildren().remove(tablePane);
-		data = ControllerInstance.getInstance().getCont().get_all_produces();
-		tablePane = new GenericTablePane(data);
-		add(tablePane, 0, 3, 5, 1);
-		GridPane.setHalignment(tablePane, HPos.CENTER);
-		GridPane.setValignment(tablePane, VPos.TOP);
-		GridPane.setMargin(tablePane, new Insets(10,0,0,0));		
+		try {
+			data = ControllerInstance.getInstance().getCont().get_all_produces();
+			tablePane = new GenericTablePane(data);
+			add(tablePane, 0, 3, 5, 1);
+			GridPane.setHalignment(tablePane, HPos.CENTER);
+			GridPane.setValignment(tablePane, VPos.TOP);
+			GridPane.setMargin(tablePane, new Insets(10,0,0,0));	
+		} catch (SQLException e) {
+			ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+		}
+			
 	}
 	
-	private void createPurchasePane() {
+	private void createPurchasePane(){
 		purchaseCartButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
@@ -220,15 +240,21 @@ public class PurchasePane extends GridPane implements ViewInterface {
 				
 			}
 		});
-		setPaymentLeft();
+		try {
+			setPaymentLeft();
+		} catch (SQLException e) {
+			//TODO Handle
+		}
 		purchasePane.getChildren().addAll(paymentLeftLabel, thePaymentLabel, purchaseCartButton);
 		add(purchasePane, 0, 4, 3, 1);
 		GridPane.setHalignment(purchasePane, HPos.CENTER);
 		GridPane.setValignment(purchasePane, VPos.TOP);
-		GridPane.setMargin(purchasePane, new Insets(10,0,0,0));			
+		GridPane.setMargin(purchasePane, new Insets(10,0,0,0));	
+
+				
 	}
 	
-	private void setPaymentLeft() {
+	private void setPaymentLeft() throws SQLException {
 		thePaymentLabel.setText(ControllerInstance.getInstance().getCont().getPaymentLeft()+"");
 	}
 

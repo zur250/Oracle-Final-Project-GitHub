@@ -1,5 +1,7 @@
 package View;
 
+import java.sql.SQLException;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -143,26 +145,15 @@ public class RegisterView extends GridPane implements ViewInterface{
         submitButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(userNameField.getText().isEmpty()) {
-                    ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please enter your User Name");
-                    return;
-                }
-                if(phoneField.getText().isEmpty()) {
-                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please enter your Phone Number");
-                    return;
-                }
-                if(passwordField.getText().isEmpty()) {
-                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please enter a password");
-                    return;
-                }
-                if(balanceField.getText().isEmpty()) {
-                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please enter a balance");
-                    return;
-                }
-                ControllerInstance.getInstance().getCont().register(userNameField.getText(), passwordField.getText(), Double.valueOf(balanceField.getText()), Long.valueOf(phoneField.getText()));
+                try {
+					ControllerInstance.getInstance().getCont().register(userNameField.getText(), passwordField.getText(), Double.valueOf(balanceField.getText()), Long.valueOf(phoneField.getText()));
+					ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, DataPane.getInstance().getScene().getWindow(), "Registration Successful!", "Welcome " + userNameField.getText());
+	                clearData();
+				} catch (NumberFormatException | SQLException e) {
+					ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+				}
 
-                ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, DataPane.getInstance().getScene().getWindow(), "Registration Successful!", "Welcome " + userNameField.getText());
-                clearData();
+                
             }
         });
     }

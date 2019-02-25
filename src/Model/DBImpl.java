@@ -27,7 +27,7 @@ public class DBImpl implements DBInterface {
 		}
 		catch (Exception e){
 			System.out.println(e);
-			throw new Exception("Error connecting to the db : " +e.getMessage());
+			throw new Exception("Error connecting to the db :" +e.getMessage());
 		}
 	}
 
@@ -39,8 +39,6 @@ public class DBImpl implements DBInterface {
 
 	@Override
 	public void register_user(String username, String pass, int roleID, double balance,long phone) throws SQLException {
-
-		try {
     	CallableStatement stmt = conn.prepareCall("{CALL Zur.users_pkg.register_user(?,?,?,?,?)}");
 		stmt.setString(1, username);
 		stmt.setString(2, pass);
@@ -48,12 +46,6 @@ public class DBImpl implements DBInterface {
 		stmt.setLong(4, phone);
 		stmt.setDouble(5, balance);
 		stmt.executeUpdate();
-		}
-		catch (Throwable e) {
-			System.out.println(e.getMessage());
-		}
-		
-		
 	}
 
 	@Override
@@ -102,7 +94,6 @@ public class DBImpl implements DBInterface {
 
 	@Override
 	public User get_user(String userName) throws SQLException {
-		try {
 		User cur_User = null;
 		CallableStatement stmt = conn.prepareCall("BEGIN Zur.users_pkg.get_user(?,?); END;");
 		stmt.setString(1, userName);
@@ -113,16 +104,10 @@ public class DBImpl implements DBInterface {
 	        cur_User = new User(rs.getString("username"), rs.getString("pass"), rs.getInt("phone"), rs.getDate("joindate"), rs.getInt("roleid"), rs.getDouble("balance"));
 	      }
 		return cur_User;
-		}
-		catch(Exception e){
-			System.out.println(e.getMessage()+"User does not exsist?");
-		}
-		return null;
 	}
 	
 	@Override
 	public Role get_role(int roleID) throws SQLException {
-		try {
 			Role cur_role = null;
 			CallableStatement stmt = conn.prepareCall("BEGIN Zur.users_pkg.get_role(?,?); END;");
 			stmt.setInt(1, roleID);
@@ -133,16 +118,11 @@ public class DBImpl implements DBInterface {
 		    	cur_role = new Role(rs.getString("rolename"),rs.getInt("roleid"),rs.getInt("discount_percentage"));
 		      }
 			return cur_role;
-			}
-			catch(Exception e){
-				System.out.println(e.getMessage()+"Role does not exsist?");
-			}
-			return null;
 	}
 	
 	@Override
 	public ArrayList<User> get_users() throws SQLException {
-		try {
+
 			User cur_User = null;
 			ArrayList<User> users = new ArrayList<>();
 			CallableStatement stmt = conn.prepareCall("BEGIN Zur.users_pkg.get_all_users(?); END;");
@@ -161,16 +141,10 @@ public class DBImpl implements DBInterface {
 				System.out.println(cur_User.getRoleID());
 		      }
 			return users;
-			}
-			catch(Exception e){
-				System.out.println(e.getMessage());
-			}
-		return null;
 	}
 
 	@Override
 	public ArrayList<Role> get_roles() throws SQLException {
-		try {
 			Role cur_Role = null;
 			ArrayList<Role> roles = new ArrayList<>();
 			CallableStatement stmt = conn.prepareCall("BEGIN Zur.users_pkg.get_all_roles(?); END;");
@@ -186,15 +160,10 @@ public class DBImpl implements DBInterface {
 				System.out.println(cur_Role.getPercentage());				
 		      }
 			return roles;
-			}
-			catch(Exception e){
-				System.out.println(e.getMessage());
-			}
-		return null;
 	}
 	
 	@Override
-	public DataTypeGenericForTable getCartDetails(int cartID) {
+	public DataTypeGenericForTable getCartDetails(int cartID) throws SQLException {
 		final String[] columnNames = {"Product name", "Product ID", "Amount", "Total value"};
 		List<Object> temp;
 		List<List<Object>> tableContent = new ArrayList<>();
@@ -202,7 +171,7 @@ public class DBImpl implements DBInterface {
 		CallableStatement stmt;
 		for (int i=0; i<columnNames.length; i++)
 			columns.add(columnNames[i]);
-		try {
+
 			stmt = conn.prepareCall("BEGIN Zur.MAKE_PURCHASE_PACKAGE.view_cart(?,?); END;");			
 			stmt.setInt(1, cartID);
 			stmt.registerOutParameter(2, OracleTypes.CURSOR);
@@ -221,19 +190,14 @@ public class DBImpl implements DBInterface {
 				System.out.println(temp.get(3));
 				
 				tableContent.add(temp);
-		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
+		      }		
 		return new DataTypeGenericForTable(columns, tableContent);
 	}
 	
 	@Override
-	public int create_new_cart(String username) {
+	public int create_new_cart(String username) throws SQLException  {
 		CallableStatement stmt;
-		try {
+
 			stmt = conn.prepareCall("{? = call Zur.MAKE_PURCHASE_PACKAGE.create_new_cart(?)}");
 		
 		stmt.registerOutParameter(1, Types.INTEGER);
@@ -241,11 +205,6 @@ public class DBImpl implements DBInterface {
 		stmt.execute(); 
 		int output = stmt.getInt(1);
 		return output;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return 0;
 	}
 	
 	@Override
@@ -284,25 +243,19 @@ public class DBImpl implements DBInterface {
 	}
 	
 	@Override
-	public double get_payment_left(int cartID) {
+	public double get_payment_left(int cartID) throws SQLException {
 		CallableStatement stmt;
-		try {
-			stmt = conn.prepareCall("{? = call Zur.MAKE_PURCHASE_PACKAGE.get_payment_left(?)}");
+		stmt = conn.prepareCall("{? = call Zur.MAKE_PURCHASE_PACKAGE.get_payment_left(?)}");
 		
 		stmt.registerOutParameter(1, Types.DOUBLE);
 		stmt.setInt(2,cartID);       
 		stmt.execute(); 
 		double output = stmt.getDouble(1);
 		return output;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return 0;
 	}
 
 	@Override
-	public DataTypeGenericForTable get_products() {
+	public DataTypeGenericForTable get_products() throws SQLException {
 		final String[] columnNames = {"Product ID", "Price", "Product name", "Amount in stock", "Product type"};
 		List<Object> temp;
 		List<List<Object>> tableContent = new ArrayList<>();
@@ -310,8 +263,6 @@ public class DBImpl implements DBInterface {
 		CallableStatement stmt;
 		for (int i=0; i<columnNames.length; i++)
 			columns.add(columnNames[i]);
-		
-		try {
 			stmt = conn.prepareCall("BEGIN Zur.MAKE_PURCHASE_PACKAGE.show_all_products(?); END;");			
 			stmt.registerOutParameter(1, OracleTypes.CURSOR);
 			stmt.execute();
@@ -332,11 +283,7 @@ public class DBImpl implements DBInterface {
 				System.out.println(temp.get(4));
 				
 				tableContent.add(temp);
-		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		    }
 		return new DataTypeGenericForTable(columns, tableContent);
 	}
 
@@ -386,7 +333,7 @@ public class DBImpl implements DBInterface {
 	}
 
 	@Override
-	public DataTypeGenericForTable viewPastPurchases(String username, LocalDate from, LocalDate until, String productType, String sorting, int function) {
+	public DataTypeGenericForTable viewPastPurchases(String username, LocalDate from, LocalDate until, String productType, String sorting, int function) throws SQLException  {
 		List<Object> temp;
 		List<List<Object>> tableContent = new ArrayList<>();
 		List<String> columns = new ArrayList<>();
@@ -418,8 +365,7 @@ public class DBImpl implements DBInterface {
 			columns.add(columnNames[columnFunction][i]);
 		
 		switch (function) {
-		case 0:
-			try {
+		case 0:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc(?,?,?); END;");			
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
@@ -432,23 +378,14 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			break;
-		case 1:
-			try {
+			}break;
+		case 1:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_from(?,?,?,?); END;");			
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
@@ -462,23 +399,14 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
-		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 2:
-			try {
+		      }	
+			}break;
+		case 2:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_to(?,?,?,?); END;");			
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
@@ -492,8 +420,6 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
@@ -501,13 +427,8 @@ public class DBImpl implements DBInterface {
 				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			break;
-		case 3:
-			try {
+			}break;
+		case 3:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_from_to(?,?,?,?,?); END;");			
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
@@ -522,23 +443,14 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 10:
-			try {
+			}break;
+		case 10:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_month(?,?,?); END;");			
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
@@ -552,24 +464,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 11:
-			try {
+			}break;
+		case 11:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_month_from(?,?,?,?); END;");			
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
@@ -584,24 +487,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 12:
-			try {
+			}break;
+		case 12:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_month_to(?,?,?,?); END;");			
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
@@ -616,24 +510,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 13:
-			try {
+			}break;
+		case 13:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_month_from_to(?,?,?,?,?); END;");			
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
@@ -649,24 +534,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 20:
-			try {
+			}break;
+		case 20:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_year(?,?,?); END;");			
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
@@ -679,22 +555,14 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 21:
-			try {
+			}break;
+		case 21:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_year_from(?,?,?,?); END;");			
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
@@ -708,22 +576,14 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 22:
-			try {
+			}break;
+		case 22:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_year_to(?,?,?,?); END;");			
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
@@ -737,22 +597,14 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 23:
-			try {
+			}break;
+		case 23:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_purc_year_from_to(?,?,?,?,?); END;");			
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
@@ -767,22 +619,14 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 30:
-			try {
+			}break;
+		case 30:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc(?,?); END;");
 			stmt.setString(1, productType);
 			stmt.registerOutParameter(2, OracleTypes.CURSOR);
@@ -795,24 +639,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 31:
-			try {
+			}break;
+		case 31:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_from(?,?,?); END;");
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -826,24 +661,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 32:
-			try {
+			}break;
+		case 32:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_to(?,?,?); END;");
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
@@ -857,24 +683,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 33:
-			try {
+			}break;
+		case 33:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_from_to(?,?,?,?); END;");
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -889,24 +706,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 40:
-			try {
+			}break;
+		case 40:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_month(?,?); END;");
 			stmt.setString(1, productType);
 			stmt.registerOutParameter(2, OracleTypes.CURSOR);
@@ -917,21 +725,13 @@ public class DBImpl implements DBInterface {
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 41:
-			try {
+			}break;
+		case 41:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_month_from(?,?,?); END;");
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -943,21 +743,13 @@ public class DBImpl implements DBInterface {
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
-				System.out.println(temp.get(2));
-				
+				System.out.println(temp.get(2));	
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 42:
-			try {
+			}break;
+		case 42:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_month_to(?,?,?); END;");
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
@@ -969,21 +761,13 @@ public class DBImpl implements DBInterface {
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 43:
-			try {
+			}break;
+		case 43:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_month_from_to(?,?,?,?); END;");
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
@@ -996,21 +780,13 @@ public class DBImpl implements DBInterface {
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 50:
-			try {
+			}break;
+		case 50:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_year(?,?); END;");
 			stmt.setString(1, productType);
 			stmt.registerOutParameter(2, OracleTypes.CURSOR);
@@ -1020,23 +796,13 @@ public class DBImpl implements DBInterface {
 		    	temp = new ArrayList<>();
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 51:
-			try {
-
+			}break;
+		case 51:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_year_from(?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -1046,23 +812,13 @@ public class DBImpl implements DBInterface {
 		    	temp = new ArrayList<>();
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 52:
-			try {
-
+			}break;
+		case 52:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_year_to(?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -1072,22 +828,13 @@ public class DBImpl implements DBInterface {
 		    	temp = new ArrayList<>();
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 53:
-			try {
+			}break;
+		case 53:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_purc_year_from_to(?,?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setDate(3, Date.valueOf(until));
@@ -1098,22 +845,13 @@ public class DBImpl implements DBInterface {
 		    	temp = new ArrayList<>();
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 60:
-			try {
+			}break;
+		case 60:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc(?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.registerOutParameter(2, OracleTypes.CURSOR);
 			stmt.execute();
@@ -1125,26 +863,16 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				System.out.println(e.getMessage());
-			}
-			
-			break;
-		case 61:
-			try {
-
+			}break;
+		case 61:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_from(?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -1157,27 +885,16 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 62:
-			try {
-
+			}break;
+		case 62:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_to(?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -1190,27 +907,16 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 63:
-			try {
-
+			}break;
+		case 63:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_from_to(?,?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setDate(3, Date.valueOf(until));
@@ -1224,27 +930,16 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 70:
-			try {
-
+			}break;
+		case 70:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_month(?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.registerOutParameter(2, OracleTypes.CURSOR);
 			stmt.execute();
@@ -1254,24 +949,14 @@ public class DBImpl implements DBInterface {
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 71:
-			try {
-
+			}break;
+		case 71:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_month_from(?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -1282,24 +967,14 @@ public class DBImpl implements DBInterface {
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 72:
-			try {
-
+			}break;
+		case 72:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_month_to(?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -1310,24 +985,14 @@ public class DBImpl implements DBInterface {
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 73:
-			try {
-
+			}break;
+		case 73:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_month_from_to(?,?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setDate(3, Date.valueOf(until));
@@ -1339,24 +1004,14 @@ public class DBImpl implements DBInterface {
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 80:
-			try {
-
+			}break;
+		case 80:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_year(?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.registerOutParameter(2, OracleTypes.CURSOR);
 			stmt.execute();
@@ -1365,23 +1020,13 @@ public class DBImpl implements DBInterface {
 		    	temp = new ArrayList<>();
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 81:
-			try {
-
+			}break;
+		case 81:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_year_from(?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -1391,23 +1036,13 @@ public class DBImpl implements DBInterface {
 		    	temp = new ArrayList<>();
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 82:
-			try {
-
+			}break;
+		case 82:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_year_to(?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -1417,23 +1052,13 @@ public class DBImpl implements DBInterface {
 		    	temp = new ArrayList<>();
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 83:
-			try {
-
+			}break;
+		case 83:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_purc_year_from_to(?,?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setDate(3, Date.valueOf(until));
@@ -1444,23 +1069,13 @@ public class DBImpl implements DBInterface {
 		    	temp = new ArrayList<>();
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 100:
-			try {
-
+			}break;
+		case 100:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod(?,?,?,?); END;");			
-
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setString(3, sorting);
@@ -1473,26 +1088,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 101:
-			try {
-
+			}break;
+		case 101:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_from(?,?,?,?,?); END;");			
-
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
@@ -1506,26 +1110,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 102:
-			try {
-
+			}break;
+		case 102:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_to(?,?,?,?,?); END;");			
-
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(until));
@@ -1539,26 +1132,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 103:
-			try {
-
+			}break;
+		case 103:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_from_to(?,?,?,?,?,?); END;");			
-
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
@@ -1573,26 +1155,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 110:
-			try {
-
+			}break;
+		case 110:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_month(?,?,?,?); END;");			
-
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setString(3, sorting);
@@ -1605,26 +1176,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 111:
-			try {
-
+			}break;
+		case 111:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_month_from(?,?,?,?,?); END;");			
-
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
@@ -1638,25 +1198,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}			
-			break;
-		case 112:
-			try {
-
+			}break;
+		case 112:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_month_to(?,?,?,?,?); END;");			
-
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(until));
@@ -1670,26 +1220,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}			
-			
-			break;
-		case 113:
-			try {
-
+			}break;
+		case 113:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_month_from_to(?,?,?,?,?,?); END;");			
-
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
@@ -1704,26 +1243,15 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}			
-			
-			break;
-		case 120:
-			try {
-
+			}break;
+		case 120:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_year(?,?,?,?); END;");			
-
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setString(3, sorting);
@@ -1735,25 +1263,14 @@ public class DBImpl implements DBInterface {
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 121:
-			try {
-
+			}break;
+		case 121:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_year_from(?,?,?,?,?); END;");			
-
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
@@ -1766,25 +1283,14 @@ public class DBImpl implements DBInterface {
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 122:
-			try {
-
+			}break;
+		case 122:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_year_to(?,?,?,?,?); END;");			
-
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(until));
@@ -1797,25 +1303,14 @@ public class DBImpl implements DBInterface {
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 123:
-			try {
-
+			}break;
+		case 123:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_MINE.get_my_prod_year_from_to(?,?,?,?,?,?); END;");			
-
 			stmt.setString(1, username);
 			stmt.setString(2, productType);
 			stmt.setDate(3, Date.valueOf(from));
@@ -1829,25 +1324,14 @@ public class DBImpl implements DBInterface {
 		    	temp.add(rs.getInt(1));
 		        temp.add(rs.getInt(2));
 		        temp.add(rs.getInt(3));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 130:
-			try {
-
+			}break;
+		case 130:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod(?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setString(2, sorting);
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -1861,28 +1345,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 131:
-			try {
-
+			}break;
+		case 131:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_from(?,?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setString(3, sorting);
@@ -1897,28 +1370,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 132:
-			try {
-
+			}break;
+		case 132:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_to(?,?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
 			stmt.setString(3, sorting);
@@ -1933,28 +1395,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 133:
-			try {
-
+			}break;
+		case 133:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_from_to(?,?,?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setDate(3, Date.valueOf(until));
@@ -1970,28 +1421,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 140:
-			try {
-
+			}break;
+		case 140:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_month(?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setString(2, sorting);
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -2005,28 +1445,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 141:
-			try {
-
+			}break;
+		case 141:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_month_from(?,?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setString(3, sorting);
@@ -2041,28 +1470,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 142:
-			try {
-
+			}break;
+		case 142:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_month_to(?,?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
 			stmt.setString(3, sorting);
@@ -2077,28 +1495,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 143:
-			try {
-
+			}break;
+		case 143:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_month_from_to(?,?,?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setDate(3, Date.valueOf(until));
@@ -2114,28 +1521,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 150:
-			try {
-
+			}break;
+		case 150:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_year(?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setString(2, sorting);
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -2148,26 +1544,16 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 151:
-			try {
-
+			}break;
+		case 151:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_year_from(?,?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setString(3, sorting);
@@ -2181,26 +1567,16 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 152:
-			try {
-
+			}break;
+		case 152:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_year_to(?,?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
 			stmt.setString(3, sorting);
@@ -2214,26 +1590,16 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 153:
-			try {
-
+			}break;
+		case 153:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_WORKERS.get_workers_prod_year_from_to(?,?,?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setDate(3, Date.valueOf(until));
@@ -2248,26 +1614,16 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 160:
-			try {
-
+			}break;
+		case 160:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod(?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setString(2, sorting);
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -2281,28 +1637,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 161:
-			try {
-
+			}break;
+		case 161:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_from(?,?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setString(3, sorting);
@@ -2317,28 +1662,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 162:
-			try {
-
+			}break;
+		case 162:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_to(?,?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
 			stmt.setString(3, sorting);
@@ -2353,28 +1687,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 163:
-			try {
-
+			}break;
+		case 163:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_from_to(?,?,?,?,?); END;");
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setDate(3, Date.valueOf(until));
@@ -2390,28 +1713,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 170:
-			try {
-
+			}break;
+		case 170:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_month(?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setString(2, sorting);
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -2425,28 +1737,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 171:
-			try {
-
+			}break;
+		case 171:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_month_from(?,?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setString(3, sorting);
@@ -2461,28 +1762,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 172:
-			try {
-
+			}break;
+		case 172:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_month_to(?,?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
 			stmt.setString(3, sorting);
@@ -2497,28 +1787,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 173:
-			try {
-
+			}break;
+		case 173:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_month_from_to(?,?,?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setDate(3, Date.valueOf(until));
@@ -2534,28 +1813,17 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
 		        temp.add(rs.getInt(6));
-		        
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
 				System.out.println(temp.get(5));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 180:
-			try {
-
+			}break;
+		case 180:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_year(?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setString(2, sorting);
 			stmt.registerOutParameter(3, OracleTypes.CURSOR);
@@ -2568,26 +1836,16 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 181:
-			try {
-
+			}break;
+		case 181:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_year_from(?,?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setString(3, sorting);
@@ -2601,26 +1859,16 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 182:
-			try {
-
+			}break;
+		case 182:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_year_to(?,?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(until));
 			stmt.setString(3, sorting);
@@ -2634,26 +1882,16 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-		case 183:
-			try {
-
+			}break;
+		case 183:{
 			stmt = conn.prepareCall("BEGIN Zur.PRODUCTS_PURCHASES_CUSTOMERS.get_cust_prod_year_from_to(?,?,?,?,?); END;");			
-
 			stmt.setString(1, productType);
 			stmt.setDate(2, Date.valueOf(from));
 			stmt.setDate(3, Date.valueOf(until));
@@ -2668,67 +1906,48 @@ public class DBImpl implements DBInterface {
 		        temp.add(rs.getInt(3));
 		        temp.add(rs.getInt(4));
 		        temp.add(rs.getInt(5));
-
 				System.out.println(temp.get(0));
 				System.out.println(temp.get(1));
 				System.out.println(temp.get(2));
 				System.out.println(temp.get(3));
 				System.out.println(temp.get(4));
-				
 				tableContent.add(temp);
 		      }
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			break;
-
-		default:
-			break;
+			}break;
+		default:{
+			}break;
 		}
-		
 		return new DataTypeGenericForTable(columns, tableContent);
 	}
 
 	
-	public static void main(String[] args)
+	public static void main(String[] args) throws Exception
 	{ 
 		DBImpl d = new DBImpl();
-		try {
-			d.dbConnect("admin", "147258");
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			//System.out.println(d.create_new_cart(username));
-			//d.change_discount("Admin", 95);
-			//System.out.println(d.get_users());
-			//System.out.println(d.get_cart_price(1));
-			//System.out.println(d.viewPastPurchases(username, null, null, "none", "asc", 160));
-			//d.get_roles();
-			//System.out.println(d.get_user("guy"));
-			//d.get_users();			//d.viewPastPurchases(null, null, null, 0);
-			//d.viewPastPurchases(LocalDate.now(), null, "none", 1);
-			//d.viewPastPurchases(null, LocalDate.now(), "none", 2);
-			//d.viewPastPurchases(LocalDate.now().minusDays(10), LocalDate.now(), "DAIRY", 3);
-			//d.viewPastPurchases(null, null, "DAIRY", 10);
-			//d.viewPastPurchases(LocalDate.now(), null, "DAIRY", 11);
-			//d.viewPastPurchases(null, null, "DAIRY", 20);
-			//d.viewPastPurchases(null, null, "DAIRY", 30);
-			//d.viewPastPurchases(null, null, "food", 110);
-			//User u = d.get_user("guy");
-			//System.out.println(u.getUserName());
-			//System.out.println(u.getPassword());
-			//System.out.println(u.getPhoneNumber());
-			//System.out.println(u.getBalance());
-			//System.out.println(u.getHire_date());
-			//System.out.println(u.getRoleID());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		d.dbConnect("admin", "147258");
+		//System.out.println(d.create_new_cart(username));
+		//d.change_discount("Admin", 95);
+		//System.out.println(d.get_users());
+		//System.out.println(d.get_cart_price(1));
+		//System.out.println(d.viewPastPurchases(username, null, null, "none", "asc", 160));
+		//d.get_roles();
+		//System.out.println(d.get_user("guy"));
+		//d.get_users();			//d.viewPastPurchases(null, null, null, 0);
+		//d.viewPastPurchases(LocalDate.now(), null, "none", 1);
+		//d.viewPastPurchases(null, LocalDate.now(), "none", 2);
+		//d.viewPastPurchases(LocalDate.now().minusDays(10), LocalDate.now(), "DAIRY", 3);
+		//d.viewPastPurchases(null, null, "DAIRY", 10);
+		//d.viewPastPurchases(LocalDate.now(), null, "DAIRY", 11);
+		//d.viewPastPurchases(null, null, "DAIRY", 20);
+		//d.viewPastPurchases(null, null, "DAIRY", 30);
+		//d.viewPastPurchases(null, null, "food", 110);
+		//User u = d.get_user("guy");
+		//System.out.println(u.getUserName());
+		//System.out.println(u.getPassword());
+		//System.out.println(u.getPhoneNumber());
+		//System.out.println(u.getBalance());
+		//System.out.println(u.getHire_date());
+		//System.out.println(u.getRoleID());
 	}
 	
 

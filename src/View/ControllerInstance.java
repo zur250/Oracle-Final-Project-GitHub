@@ -1,6 +1,7 @@
 package View;
 
 import Controller.*;
+import javafx.scene.control.Alert.AlertType;
 
 public class ControllerInstance {
 
@@ -17,7 +18,11 @@ public class ControllerInstance {
 	
 	private ControllerInstance() {
 		super();
-		cont = new ControllerImpl();
+		try {
+			cont = new ControllerImpl();
+		} catch (Exception e) {
+			ErrorMessage.getInstance().showAlert(AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+		}
 		//System.out.println("new cont");
 	}
 	

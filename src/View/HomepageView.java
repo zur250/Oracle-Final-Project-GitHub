@@ -194,11 +194,6 @@ public class HomepageView extends GridPane implements ViewInterface {
         updatePasswrdbtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	if(updatePassfield.getText().isEmpty())
-            	{
-            		ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please enter a new password");
-            		return;
-            	}
             	try {
 					ControllerInstance.getInstance().getCont().updateUserPassword(curPassfield.getText(), updatePassfield.getText());
 					curPassfield.clear();
@@ -233,10 +228,6 @@ public class HomepageView extends GridPane implements ViewInterface {
         updateBalancebtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	if(updateBlanacefield.getText().isEmpty()) {
-            			ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please enter a deposit value");
-                		return;
-                	}
                 	try {
 						ControllerInstance.getInstance().getCont().updateUserBalance(Double.parseDouble(updateBlanacefield.getText()));
 						balanceField.setText(String.valueOf((Double.parseDouble(updateBlanacefield.getText())+Double.parseDouble(balanceField.getText()))));
@@ -247,8 +238,6 @@ public class HomepageView extends GridPane implements ViewInterface {
 						updateBlanacefield.clear();
 						ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
 					}
-                	
-                	
                 }
         });
 

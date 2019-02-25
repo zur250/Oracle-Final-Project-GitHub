@@ -1,6 +1,9 @@
 package View;
 
+import java.sql.SQLException;
+
 import javafx.scene.layout.BorderPane;
+import javafx.scene.control.Alert.AlertType;
 
 public class BottomPane extends BorderPane implements MainViewInterface {
 	
@@ -14,7 +17,11 @@ public class BottomPane extends BorderPane implements MainViewInterface {
 		menu = new EntranceMenuPane();
 		setLeft(menu);
 		setCenter((DataPane)data);
-		ControllerInstance.getInstance().getCont().registerView(this);
+		try {
+			ControllerInstance.getInstance().getCont().registerView(this);
+		} catch (SQLException e) {
+			ErrorMessage.getInstance().showAlert(AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+		}
 		
 	}
 	

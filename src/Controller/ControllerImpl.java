@@ -27,20 +27,14 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	private int cartID;
 	
 	
-	public ControllerImpl() {
+	public ControllerImpl() throws Exception {
 		super();
 		dbModel = new DBImpl();
-		try {
-			dbModel.dbConnect(dbLogin, dbPass);
-		} catch (Exception e1) {
-			// TODO handle db user not exsist
-			System.out.println("db User does not exist");
-		}
+		dbModel.dbConnect(dbLogin, dbPass);
 	}
 
 	@Override
-	public void Connect(String userName, String password) {
-		try {
+	public void Connect(String userName, String password) throws Exception {
 			User temp = dbModel.get_user(userName);
 			System.out.println(temp.getUserName());
 			System.out.println(temp.getPassword());
@@ -69,33 +63,20 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 			else {
 				// TODO show relevant error message to the user
 			}
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		
 	}
 
 	@Override
-	public void register(String userName, String password, double balance, long phoneNumber) { 
-		try {
+	public void register(String userName, String password, double balance, long phoneNumber) throws SQLException { 
 			dbModel.register_user(userName, password, customerRoleId, balance, phoneNumber);
-		} catch (Exception e) {
-			// TODO handle user allready exsist or some checks did not worked well
-		}
 	}
 
 	@Override
-	public void disconnect() {
+	public void disconnect() throws Exception {
 		if(curUser != null) {
 			curUser = null;
-			try {
 				deleteCart();
 				dbModel.dbConnect(dbLogin, dbPass);
 				curView.setUser(UserType.ANONMOUS);
-			} catch (Exception e) {
-				// TODO , for some reason cant connect with login user to the db. show relevant message to the user
-				System.out.println(e.getMessage());
-			}
 		}
 		else {
 			// TODO show to the user that he needs to be connected
@@ -105,18 +86,13 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 	/*This should be initiated when a login occurs*/
 	@Override
-	public void createNewCart() {
+	public void createNewCart() throws SQLException {
 		this.cartID=dbModel.create_new_cart(curUser.getUserName());
 	}
 	
 	@Override
-	public void deleteCart() {
-		try {
-			dbModel.delete_cart(cartID);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void deleteCart() throws SQLException {
+		dbModel.delete_cart(cartID);
 	}
 
 	@Override
@@ -126,13 +102,8 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void removeProductFromCart(int productID) {//same question as above
-		try {
+	public void removeProductFromCart(int productID) throws SQLException {//same question as above
 			dbModel.remove_product_from_cart(this.cartID, productID);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	@Override
@@ -154,18 +125,13 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 	
 	@Override
-	public DataTypeGenericForTable get_all_produces() {
+	public DataTypeGenericForTable get_all_produces() throws SQLException {
 		return dbModel.get_products();
 	}
 
 	@Override
-	public void updatePrice(int productID, double newPrice) {
-		try {
+	public void updatePrice(int productID, double newPrice) throws SQLException {
 			dbModel.update_product_price(productID, newPrice);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 
@@ -176,23 +142,13 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public void updateAmount(int productID, int addedAmount) {
-		try {
-			dbModel.update_amount(productID, addedAmount);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
+	public void updateAmount(int productID, int addedAmount) throws SQLException {
+			dbModel.update_amount(productID, addedAmount);	
 	}
 
 	@Override
-	public void deleteProductFromStore(int productID) {
-		try {
+	public void deleteProductFromStore(int productID) throws SQLException {
 			dbModel.delete_product(productID);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -202,45 +158,19 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 
 	@Override
 	public void updateUserBalance(double newBalance) throws Exception {
-		if(curUser != null) {
-			if(newBalance >0) {
-				try {
 					double tempBalance = curUser.getBalance()+newBalance;
 					dbModel.change_Balance(curUser.getUserName(), tempBalance);
 					curUser.setBalance(tempBalance);
-				} catch (SQLException e) {
-					// TODO write proper error
-					System.out.println(e.getMessage());
-				}
-			}
-			else {
-				// TODO show to the user a message that he cant change balance to negative value
-				throw new Exception("Cant change to negative value");
-			}
-		}
-		else {
-			// TODO show to the user that he needs to be connected
-			throw new Exception("User is not connected to the db");
-		}
-		
 	}
 
 	@Override
 	public void updateUserPassword(String currentPassword, String newPassword) throws Exception {
-		if(curUser != null) {
 			if(curUser.getPassword().equals(currentPassword)) {
 				dbModel.change_password(curUser.getUserName(), newPassword);
 				curUser.setPassword(newPassword);
 			}
-			else {
-				// TODO show to the user a message that current password must be correct
-				throw new Exception("Pls input a correct current password");
-			}
-		}
-		else {
-			// TODO show to the user that he needs to be connected
-			System.out.println("User is not connected to the db");
-		}
+			else
+				throw new Exception("Passwords are not correct");
 	}
 
 	@Override
@@ -279,7 +209,7 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 
 	@Override
 	public DataTypeGenericForTable viewPastPurchases(String username, String focusOn, String timeAggregation, String groupAggregation, LocalDate from,
-			LocalDate until, String productType, String sorting) {
+			LocalDate until, String productType, String sorting) throws SQLException {
 		int temp = 0;
 		if (focusOn.equals("Products purchased"))
 			temp+=100;
@@ -306,44 +236,32 @@ public class ControllerImpl implements ControllerInterface {//should there be a 
 	}
 
 	@Override
-	public ArrayList<ViewRole> get_roles() {
-		try {
+	public ArrayList<ViewRole> get_roles() throws SQLException {
 			ArrayList<Role> dbRoles = dbModel.get_roles();
 			ArrayList<ViewRole> roles = new ArrayList<>();
 			for (Role dbRole : dbRoles) {
 				roles.add(new ViewRole(dbRole.getRoleName(), dbRole.getPercentage()));
 			}
 			return roles;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	@Override
-	public ArrayList<View.User> get_users() {
-		try {
+	public ArrayList<View.User> get_users() throws SQLException {
 			ArrayList<Model.User> dbUsers= dbModel.get_users();
 			ArrayList<View.User> users = new ArrayList<>();
 			for (Model.User dbUser : dbUsers) {
 				users.add(new View.User(dbUser.getUserName(), Integer.toString(dbUser.getPhoneNumber()), Integer.toString(dbUser.getRoleID()), dbUser.getBalance(), Calendar.getInstance().getTime().getYear()-dbUser.getHire_date().getYear(), dbUser.getHire_date()));
 			}
 			return users;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
 	}
 	
 	@Override
-	public DataTypeGenericForTable getCartDetails() {
+	public DataTypeGenericForTable getCartDetails() throws SQLException {
 		return dbModel.getCartDetails(this.cartID);
 	}
 	
 	@Override
-	public double getPaymentLeft() {
+	public double getPaymentLeft() throws SQLException {
 		return dbModel.get_payment_left(this.cartID);
 	}
 }

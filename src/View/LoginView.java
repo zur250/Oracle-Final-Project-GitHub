@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Reflection;
 import javafx.scene.layout.BorderPane;
@@ -22,8 +23,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class LoginView extends BorderPane implements ViewInterface{
-	String user = "zur";
-	String pw = "password";
 	String checkUser, checkPw;
 	
 	private HBox hb;
@@ -123,16 +122,11 @@ public class LoginView extends BorderPane implements ViewInterface{
         	public void handle(ActionEvent event) {
         		checkUser = txtUserName.getText().toString();
         		checkPw = pf.getText().toString();
-        		if(checkUser.isEmpty()) {
-                    ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter your User Name");
-                    return;
-                }
-                if(checkPw.isEmpty()) {
-                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter your Password");
-                    return;
-                }        		
-        		// TODO send to controller
-                ControllerInstance.getInstance().getCont().Connect(checkUser, checkPw);
+                try {
+					ControllerInstance.getInstance().getCont().Connect(checkUser, checkPw);
+				} catch (Exception e) {
+					ErrorMessage.getInstance().showAlert(AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.toString());
+				}
                 
            		txtUserName.setText("");
         		pf.setText("");
@@ -156,23 +150,4 @@ public class LoginView extends BorderPane implements ViewInterface{
 		txtUserName.clear();
 		pf.clear();
 	}
-	
-	public void handle(ActionEvent event) {
-		checkUser = txtUserName.getText().toString();
-		checkPw = pf.getText().toString();
-		if(checkUser.isEmpty()) {
-            ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter your User Name");
-            return;
-        }
-        if(checkPw.isEmpty()) {
-        	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Form Error!", "Please enter your Password");
-            return;
-        }        		
-		// TODO send to controller
-        this.getClass();
-        
-   		txtUserName.setText("");
-		pf.setText("");
-	}
-
 }

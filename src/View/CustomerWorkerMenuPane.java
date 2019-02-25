@@ -1,8 +1,11 @@
 package View;
 
+import java.sql.SQLException;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.Alert.AlertType;
 
 public class CustomerWorkerMenuPane extends MenuPane {
 
@@ -45,7 +48,11 @@ public class CustomerWorkerMenuPane extends MenuPane {
 			
 			@Override
 			public void handle(ActionEvent event) {
-				ControllerInstance.getInstance().getCont().disconnect();
+				try {
+					ControllerInstance.getInstance().getCont().disconnect();
+				} catch (Exception e) {
+					ErrorMessage.getInstance().showAlert(AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+				}
 				DataPane.getInstance().changeView(WindowType.LOGIN);
 				
 			}

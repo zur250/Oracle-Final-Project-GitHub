@@ -1,8 +1,10 @@
 package View;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import javafx.scene.Node;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
@@ -95,7 +97,11 @@ public class DataPane extends StackPane implements MainViewInterface {
 		if(type == WindowType.HOMEPAGE)
 		{
 			HomepageView home = (HomepageView) this.currentPane;
-			home.setCur_User(ControllerInstance.getInstance().getCont().getCurUser());
+			try {
+				home.setCur_User(ControllerInstance.getInstance().getCont().getCurUser());
+			} catch (SQLException e) {
+				ErrorMessage.getInstance().showAlert(AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+			}
 		}
 		else if(type == WindowType.USERS) {
 			UsersView UsersPane = (UsersView) this.currentPane;

@@ -1,5 +1,6 @@
 package View;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 import javafx.application.Application;
@@ -18,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -141,14 +143,6 @@ public class DiscountView extends GridPane implements ViewInterface{
             @Override
             public void handle(ActionEvent event) {
             	ViewRole cur_selected = table.getSelectionModel().getSelectedItem();
-                if(cur_selected== null) {
-                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please select a Role to update");
-                	return;
-                }
-            	if(percentage.getText().isEmpty()) {
-            		ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please Enter percentage number");
-                	return;
-            	}
             	try {
 					ControllerInstance.getInstance().getCont().updateRoleDiscount(cur_selected.getRoleName(), Integer.parseInt(percentage.getText()));
 					table.getSelectionModel().getSelectedItem().setPercentage(Integer.parseInt(percentage.getText()));
@@ -165,8 +159,12 @@ public class DiscountView extends GridPane implements ViewInterface{
     
     public ObservableList<ViewRole> getRoles(){
         ObservableList<ViewRole> roles = FXCollections.observableArrayList();
-        for (ViewRole viewRole : ControllerInstance.getInstance().getCont().get_roles()) {
-			roles.add(viewRole);
+        try {
+			for (ViewRole viewRole : ControllerInstance.getInstance().getCont().get_roles()) {
+				roles.add(viewRole);
+			}
+		} catch (SQLException e) {
+			ErrorMessage.getInstance().showAlert(AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
 		}
         
         return roles;

@@ -1,5 +1,6 @@
 package View;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 import javafx.application.Application;
@@ -173,15 +174,12 @@ public class UsersView extends GridPane implements ViewInterface{
         deletebtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(table.getSelectionModel().getSelectedItem() == null) {
-                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please select a user to delete");
-                } else
 					try {
 						ControllerInstance.getInstance().getCont().deleteUser(table.getSelectionModel().getSelectedItem().getUserName());
 						refreshTable();
 	                	ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, DataPane.getInstance().getScene().getWindow(), "Form Error!", "User have been deleted!");
 					} catch (Exception e) {
-						ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+						ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.toString());
 					}
             }
         });
@@ -202,6 +200,7 @@ public class UsersView extends GridPane implements ViewInterface{
     		        "Customer"
     		    );
     		final ComboBox comboBox = new ComboBox(options);
+    		comboBox.getSelectionModel().selectFirst();
     		
     		comboBox.setPrefHeight(40);    		
     		comboBox.setPrefWidth(100);
@@ -214,25 +213,14 @@ public class UsersView extends GridPane implements ViewInterface{
             @Override
             public void handle(ActionEvent event) {
             	User currentSelected = table.getSelectionModel().getSelectedItem();
-                if(currentSelected == null) {
-                	ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please select a user to update");
-                	return;
-                }
-                else {
-                	// Update
-                	if(comboBox.getSelectionModel().getSelectedItem() == null) {
-                		ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Please select a role");
-                		return;
-                	}
                 	try {
 						ControllerInstance.getInstance().getCont().updateUserRole(comboBox.getSelectionModel().getSelectedItem().toString(), table.getSelectionModel().getSelectedItem().getUserName());
 						refreshTable();
 	                	ErrorMessage.getInstance().showAlert(Alert.AlertType.CONFIRMATION, DataPane.getInstance().getScene().getWindow(), "Form Error!", "Role Updated Sucssesfully");
 					} catch (Exception e) {
-						ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
+						ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.toString());
 					}
                 }
-            }
         });
 
 	}
@@ -254,10 +242,15 @@ public class UsersView extends GridPane implements ViewInterface{
         users.add(new User("Oren","0548070392","Woker",147.56,2.5,new Date(1989,11,24)));
         users.add(new User("Oren","0548070392","Woker",147.56,2.5,new Date(1989,11,24)));*/
     	ObservableList<User> users = FXCollections.observableArrayList();
-    			for (User user : ControllerInstance.getInstance().getCont().get_users()) {
-					users.add(user);
+    			try {
+					for (User user : ControllerInstance.getInstance().getCont().get_users()) {
+						users.add(user);
+						return users;
+					}
+				} catch (SQLException e) {
+					ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
 				}
-        return users;
+        return null;
     }
 
 	@Override

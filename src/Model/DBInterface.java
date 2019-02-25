@@ -21,18 +21,18 @@ public interface DBInterface {
 	Role get_role(int roleID) throws SQLException;
 	ArrayList<User> get_users() throws SQLException;
 	ArrayList<Role> get_roles() throws SQLException;
-	DataTypeGenericForTable get_products();
+	DataTypeGenericForTable get_products() throws SQLException;
 	void add_product(String productName, String type, double price, int amount) throws SQLException;
 	void update_product_price(int ID, double newPrice) throws SQLException;
 	void update_prices (double percentage) throws SQLException;
 	void delete_product (int ID) throws SQLException;
 	void update_amount (int ID, int difference) throws SQLException;
-	DataTypeGenericForTable viewPastPurchases(String username, LocalDate from, LocalDate until, String productType, String sorting, int function);
-	DataTypeGenericForTable getCartDetails(int cartID);
-	int create_new_cart(String username);
+	DataTypeGenericForTable viewPastPurchases(String username, LocalDate from, LocalDate until, String productType, String sorting, int function) throws SQLException;
+	DataTypeGenericForTable getCartDetails(int cartID) throws SQLException;
+	int create_new_cart(String username) throws SQLException;
 	void delete_cart(int CartID) throws SQLException;
 	void add_product_to_cart(int cartID, int productID, int amount) throws SQLException;
 	void remove_product_from_cart(int cartID, int productID) throws SQLException;
 	void purchase(int cartID) throws SQLException;
-	double get_payment_left(int cartID);
+	double get_payment_left(int cartID) throws SQLException;
 }
