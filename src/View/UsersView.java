@@ -245,12 +245,11 @@ public class UsersView extends GridPane implements ViewInterface{
     			try {
 					for (User user : ControllerInstance.getInstance().getCont().get_users()) {
 						users.add(user);
-						return users;
 					}
 				} catch (SQLException e) {
 					ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
 				}
-        return null;
+        return users;
     }
 
 	@Override
