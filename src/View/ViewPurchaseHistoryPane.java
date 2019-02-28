@@ -14,6 +14,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -77,6 +78,7 @@ public class ViewPurchaseHistoryPane extends GridPane implements ViewInterface {
 			@Override
 			public void handle(ActionEvent event) {
 				try {
+					clearData();
 					data = ControllerInstance.getInstance().getCont().viewPastPurchases
 					(ControllerInstance.getInstance().getCont().getCurUser().getUserName(), getSelectedFocus(), getSetlectedTimeAggregation(), getSelectedGroupAggregation(),
 							getSelectedFromDate(), getSelectedUntilDate(), getSelectedProductType(), getSelectedSortingType());
@@ -87,7 +89,7 @@ public class ViewPurchaseHistoryPane extends GridPane implements ViewInterface {
 		        GridPane.setValignment(tablePane, VPos.TOP);
 		        GridPane.setMargin(tablePane, new Insets(10, 0,0,0));
 				} catch (Exception e) {
-					System.out.println(e.getMessage());
+					ErrorMessage.getInstance().showAlert(Alert.AlertType.ERROR, DataPane.getInstance().getScene().getWindow(), "Form Error!", e.getMessage());
 				}
 			}
 		});
@@ -194,8 +196,8 @@ public class ViewPurchaseHistoryPane extends GridPane implements ViewInterface {
    		productTypeComboBox.setValue(types.get(0));
    		
    		//TODO actual effect of comboBox selection
-   		productTypeComboBox.setOnAction(
-   		      e -> System.out.println(productTypeComboBox.getValue()));
+   		//productTypeComboBox.setOnAction(
+   		  //    e -> System.out.println(productTypeComboBox.getValue()));
    		
    		typeFilterPane.getChildren().add(productTypeComboBox);
 	}
@@ -216,7 +218,7 @@ public class ViewPurchaseHistoryPane extends GridPane implements ViewInterface {
 			@Override
 			public void handle(ActionEvent event) {
 				LocalDate date = startDatePicker.getValue();
-		        System.err.println("Selected date: " + date);
+		        //System.err.println("Selected date: " + date);
 			}
 		});
 		
@@ -226,7 +228,7 @@ public class ViewPurchaseHistoryPane extends GridPane implements ViewInterface {
 			@Override
 			public void handle(ActionEvent event) {
 				LocalDate date = endDatePicker.getValue();
-		        System.err.println("Selected date: " + date);
+		        //System.err.println("Selected date: " + date);
 			}
 		});
 		dateFilterPane.setPadding(new Insets(0, 5, 0, 5));
@@ -241,7 +243,7 @@ public class ViewPurchaseHistoryPane extends GridPane implements ViewInterface {
 		
 		purchaseRadioButton.setOnAction(e -> {
 			if (purchaseRadioButton.isSelected()){
-				System.out.println("Purchase Button Selected");
+				//System.out.println("Purchase Button Selected");
 				if (selectTableTypePane.getChildren().contains(sortAscendingRadioButton)) {
 					selectTableTypePane.getChildren().remove(sortAscendingRadioButton);
 					selectTableTypePane.getChildren().remove(sortDescendingRadioButton);
@@ -251,7 +253,7 @@ public class ViewPurchaseHistoryPane extends GridPane implements ViewInterface {
 		
 		productsRadioButton.setOnAction(e -> {
 			if (productsRadioButton.isSelected()) {
-				System.out.println("Products Button Selected");
+				//System.out.println("Products Button Selected");
 				selectTableTypePane.getChildren().addAll(sortAscendingRadioButton, sortDescendingRadioButton);
 				sortAscendingRadioButton.setSelected(true);
 			}
