@@ -167,7 +167,7 @@ public class UsersView extends GridPane implements ViewInterface{
         deletebtn.setPrefHeight(40);
         deletebtn.setDefaultButton(true);
         deletebtn.setPrefWidth(100);
-        add(deletebtn, 0,2, 2, 1);
+        //add(deletebtn, 0,2, 2, 1);
         GridPane.setHalignment(deletebtn, HPos.LEFT);
         GridPane.setMargin(deletebtn, new Insets(20, 0,20,0));
 
